@@ -1,69 +1,145 @@
-# Welcome to your Lovable project
 
-## Project info
+# PromptCollective - AI Prompt Management Platform
 
-**URL**: https://lovable.dev/projects/9464305e-dd10-4fc3-ae76-53a20e1c4d51
+PromptCollective is a web application that allows users to create, share, discover, and manage AI prompts. Users can browse public prompts, create their own, organize them by categories, and share them with the community.
 
-## How can I edit this code?
+![PromptCollective Screenshot](https://source.unsplash.com/random/1200x630/?ai)
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- **User Authentication**: Register and login via email
+- **Prompt Management**: Create, edit, and delete your own prompts
+- **Gallery**: Browse and discover prompts created by the community
+- **Categories**: Filter prompts by categories
+- **Favorites**: Save your favorite prompts for easy access
+- **Social Features**: Like and share prompts on social media
+- **Responsive Design**: Works on desktop and mobile devices
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9464305e-dd10-4fc3-ae76-53a20e1c4d51) and start prompting.
+## Project Structure
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+promptcollective/
+├── public/              # Static assets
+├── src/
+│   ├── components/      # Reusable UI components
+│   │   ├── common/      # Shared components (buttons, inputs, etc.)
+│   │   ├── layout/      # Layout components (navbar, footer, etc.)
+│   │   └── ui/          # UI design system components
+│   ├── context/         # React context for state management
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utility functions
+│   ├── pages/           # Page components
+│   └── utils/           # Helper functions
+├── index.html           # HTML entry point
+├── vite.config.ts       # Vite configuration
+└── tsconfig.json        # TypeScript configuration
 ```
 
-**Edit a file directly in GitHub**
+## Tech Stack
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **Frontend Framework**: React with TypeScript
+- **Routing**: React Router v6
+- **State Management**: React Context API and Tanstack Query
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Icons**: Lucide React
+- **Data Visualization**: Recharts
+- **Build Tool**: Vite
 
-**Use GitHub Codespaces**
+## Getting Started
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Prerequisites
 
-## What technologies are used for this project?
+- Node.js (v18 or later)
+- npm or yarn
 
-This project is built with .
+### Local Development
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Clone the repository:
 
-## How can I deploy this project?
+```bash
+git clone https://github.com/yourusername/promptcollective.git
+cd promptcollective
+```
 
-Simply open [Lovable](https://lovable.dev/projects/9464305e-dd10-4fc3-ae76-53a20e1c4d51) and click on Share -> Publish.
+2. Install dependencies:
 
-## I want to use a custom domain - is that possible?
+```bash
+npm install
+# or
+yarn install
+```
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+3. Start the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+4. Open your browser and navigate to `http://localhost:8080`
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables (once you implement a backend):
+
+```
+VITE_API_URL=your_backend_api_url
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+# Add other necessary environment variables
+```
+
+## Deployment
+
+### Build for Production
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+This will generate a `dist` folder with production-ready assets.
+
+### Deployment Options
+
+1. **Netlify**:
+   - Connect your GitHub repository to Netlify
+   - Set build command to `npm run build` or `yarn build`
+   - Set publish directory to `dist`
+
+2. **Vercel**:
+   - Connect your GitHub repository to Vercel
+   - Vercel will automatically detect Vite and configure the build settings
+
+3. **GitHub Pages**:
+   - Install gh-pages: `npm install --save-dev gh-pages`
+   - Add to package.json: `"deploy": "gh-pages -d dist"`
+   - Run: `npm run build && npm run deploy`
+
+## Backend Integration
+
+The application is currently using mock data. To connect to a real backend:
+
+1. Create API endpoints that match the expected data structure
+2. Update the fetch functions in the application to use your real API endpoints
+3. Implement proper authentication and authorization
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature-name`
+5. Open a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [Shadcn UI](https://ui.shadcn.com/) - UI component library
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [React Router](https://reactrouter.com/) - Routing library
+- [Lucide Icons](https://lucide.dev/) - Icon library
