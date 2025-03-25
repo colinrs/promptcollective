@@ -18,7 +18,7 @@ const CategoryBadge: React.FC<CategoryBadgeProps> = ({ category, onClick }) => {
 
   return (
     <span
-      className="category-badge"
+      className="category-badge inline-flex items-center px-3 py-1 rounded-full text-sm font-medium cursor-pointer transition-all"
       style={{
         backgroundColor: `${category.color}20`,
         color: category.color,

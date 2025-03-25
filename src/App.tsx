@@ -12,6 +12,7 @@ import PromptGallery from "./pages/PromptGallery";
 import MyPrompts from "./pages/MyPrompts";
 import Favorites from "./pages/Favorites";
 import CreatePrompt from "./pages/CreatePrompt";
+import PromptDetails from "./pages/PromptDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/create" element={<CreatePrompt />} />
               <Route path="/edit/:promptId" element={<CreatePrompt />} />
+              <Route path="/prompt/:promptId" element={<PromptDetails />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
