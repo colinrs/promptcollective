@@ -40,26 +40,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
       
-      if (email === "demo@example.com" && password === "password") {
-        const mockUser = {
-          id: "user-1",
-          name: "Demo User",
-          email: "demo@example.com",
-          avatar: "/placeholder.svg"
-        };
-        
-        setUser(mockUser);
-        localStorage.setItem("user", JSON.stringify(mockUser));
-        toast.success("Successfully logged in");
-      } else {
-        toast.error("Invalid email or password");
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
       }
+      
+      const user = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        avatar: data.user.avatar,
+      };
+      
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      toast.success('Successfully logged in');
     } catch (error) {
-      toast.error("Login failed. Please try again.");
-      console.error("Login error:", error);
+      toast.error(error instanceof Error ? error.message : 'Login failed. Please try again.');
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -68,21 +75,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
       
-      const mockUser = {
-        id: "user-" + Date.now(),
-        name,
-        email,
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+      
+      const user = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        avatar: data.user.avatar,
       };
       
-      setUser(mockUser);
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      toast.success("Account created successfully");
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      toast.success('Account created successfully');
     } catch (error) {
-      toast.error("Registration failed. Please try again.");
-      console.error("Registration error:", error);
+      toast.error(error instanceof Error ? error.message : 'Registration failed. Please try again.');
+      console.error('Registration error:', error);
     } finally {
       setIsLoading(false);
     }
