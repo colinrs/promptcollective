@@ -1,6 +1,8 @@
 
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { toast } from "sonner";
+import { API_CONFIG } from "../config/api";
+import { LoginResponse, httpClient } from "../lib/api";
 
 interface User {
   id: string;
@@ -40,26 +42,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const data = await httpClient.post<LoginResponse>(API_CONFIG.USER_LOGIN, { email, password });
       
-      if (email === "demo@example.com" && password === "password") {
-        const mockUser = {
-          id: "user-1",
-          name: "Demo User",
-          email: "demo@example.com",
-          avatar: "/placeholder.svg"
-        };
-        
-        setUser(mockUser);
-        localStorage.setItem("user", JSON.stringify(mockUser));
-        toast.success("Successfully logged in");
-      } else {
-        toast.error("Invalid email or password");
-      }
+      const user = {
+        id: data.user_id,
+        name: data.name,
+        email: data.email,
+        avatar: data.avatar,
+        token: data.token,
+        expire_at: data.expire_at,
+      };
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      toast.success('Successfully logged in');
     } catch (error) {
-      toast.error("Login failed. Please try again.");
-      console.error("Login error:", error);
+      toast.error(error instanceof Error ? error.message : 'Login failed. Please try again.');
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -68,21 +66,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const mockUser = {
-        id: "user-" + Date.now(),
-        name,
-        email,
+      const data = await httpClient.post<LoginResponse>(API_CONFIG.USER_REGISTER, { name, email, password });
+      const user = {
+        id: data.user_id,
+        name: data.name,
+        email: data.email,
+        avatar: data.avatar,
+        token: data.token,
+        expire_at: data.expire_at,
       };
       
-      setUser(mockUser);
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      toast.success("Account created successfully");
+      setUser(user);
+     console.log(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      toast.success('Account created successfully');
     } catch (error) {
-      toast.error("Registration failed. Please try again.");
-      console.error("Registration error:", error);
+      toast.error(error instanceof Error ? error.message : 'Registration failed. Please try again.');
+      console.error('Registration error:', error);
     } finally {
       setIsLoading(false);
     }

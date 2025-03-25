@@ -1,7 +1,8 @@
 
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { toast } from "sonner";
-import { mockPrompts, mockCategories } from "../utils/mockData";
+import { API_CONFIG } from "../config/api";
+//import { mockPrompts, mockCategories } from "../utils/mockData";
 
 export interface Prompt {
   id: string;
@@ -38,7 +39,7 @@ interface PromptContextType {
   likePrompt: (id: string) => Promise<void>;
   savePrompt: (id: string) => Promise<void>;
   createCategory: (name: string) => Promise<void>;
-  getPromptsByCategory: (categoryId: string) => Prompt[];
+  getPromptsByCategory: (categoryId: string) => Promise<Prompt[]>;
 }
 
 const PromptContext = createContext<PromptContextType | undefined>(undefined);
@@ -50,45 +51,62 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const API_BASE_URL = API_CONFIG.BASE_URL;
+
   useEffect(() => {
     // Load initial data
     const fetchData = async () => {
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setPrompts(mockPrompts);
-      
-      // Filter user prompts (assuming user-1 is logged in)
-      const userPromptsData = mockPrompts.filter(p => p.createdBy.id === "user-1");
-      setUserPrompts(userPromptsData);
-      
-      // Filter saved prompts
-      const savedPromptsData = mockPrompts.filter(p => p.saved);
-      setSavedPrompts(savedPromptsData);
-      
-      setCategories(mockCategories);
-      setIsLoading(false);
+      try {
+        const [promptsRes, categoriesRes] = await Promise.all([
+          fetch(`${API_BASE_URL}${API_CONFIG.GET_PROMPTS}`),
+          fetch(`${API_BASE_URL}${API_CONFIG.GET_CATEGORY}`)
+        ]);
+
+        if (!promptsRes.ok || !categoriesRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const promptsData = await promptsRes.json();
+        const categoriesData = await categoriesRes.json();
+
+        setPrompts(promptsData);
+        setCategories(categoriesData);
+
+        // Filter user prompts
+        const userPromptsData = promptsData.filter(p => p.createdBy.id === "user-1");
+        setUserPrompts(userPromptsData);
+
+        // Filter saved prompts
+        const savedPromptsData = promptsData.filter(p => p.saved);
+        setSavedPrompts(savedPromptsData);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Fetch data error:", error);
+        toast.error("Failed to load data");
+        setIsLoading(false);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [API_BASE_URL]);
 
   const createPrompt = async (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy">) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
-      const newPrompt: Prompt = {
-        id: `prompt-${Date.now()}`,
-        ...prompt,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        likes: 0,
-        createdBy: {
-          id: "user-1", // Mocked current user
-          name: "Demo User",
+      const response = await fetch(`${API_BASE_URL}${API_CONFIG.CREATE_PROMPT}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      };
-      
+        body: JSON.stringify(prompt),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create prompt");
+      }
+
+      const newPrompt = await response.json();
       setPrompts(prevPrompts => [newPrompt, ...prevPrompts]);
       setUserPrompts(prevPrompts => [newPrompt, ...prevPrompts]);
       
@@ -104,14 +122,22 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const updatePrompt = async (id: string, promptUpdate: Partial<Prompt>) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
+      const response = await fetch(`${API_BASE_URL}${API_CONFIG.UPDATE_PROMPT}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(promptUpdate),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update prompt");
+      }
+
+      const updatedPrompt = await response.json();
       const updatePrompts = (promptsList: Prompt[]) => 
-        promptsList.map(p => 
-          p.id === id ? { ...p, ...promptUpdate, updatedAt: new Date().toISOString() } : p
-        );
-      
+        promptsList.map(p => p.id === id ? updatedPrompt : p);
+
       setPrompts(updatePrompts);
       setUserPrompts(updatePrompts);
       setSavedPrompts(updatePrompts);
@@ -128,9 +154,14 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const deletePrompt = async (id: string) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
+      const response = await fetch(`${API_BASE_URL}${API_CONFIG.DELETE_PROMPT}?id=${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete prompt");
+      }
+
       const filterPrompts = (promptsList: Prompt[]) => 
         promptsList.filter(p => p.id !== id);
       
@@ -149,19 +180,17 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const likePrompt = async (id: string) => {
     try {
-      // Toggle like status
+      const response = await fetch(`${API_BASE_URL}/prompts/${id}/like`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update like status");
+      }
+
+      const updatedPrompt = await response.json();
       const updatePrompts = (promptsList: Prompt[]) => 
-        promptsList.map(p => {
-          if (p.id === id) {
-            const isLiked = !p.liked;
-            return { 
-              ...p, 
-              liked: isLiked,
-              likes: isLiked ? p.likes + 1 : p.likes - 1
-            };
-          }
-          return p;
-        });
+        promptsList.map(p => p.id === id ? updatedPrompt : p);
       
       setPrompts(updatePrompts);
       setUserPrompts(updatePrompts);
@@ -175,29 +204,26 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const savePrompt = async (id: string) => {
     try {
-      // Toggle saved status
+      const response = await fetch(`${API_BASE_URL}/prompts/${id}/save`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update saved status");
+      }
+
+      const updatedPrompt = await response.json();
       const updatePrompts = (promptsList: Prompt[]) => 
-        promptsList.map(p => {
-          if (p.id === id) {
-            const isSaved = !p.saved;
-            return { ...p, saved: isSaved };
-          }
-          return p;
-        });
+        promptsList.map(p => p.id === id ? updatedPrompt : p);
       
       setPrompts(updatePrompts);
       setUserPrompts(updatePrompts);
       
       // Update saved prompts list
-      const updatedPrompt = prompts.find(p => p.id === id);
-      if (updatedPrompt) {
-        const newSavedStatus = !updatedPrompt.saved;
-        
-        if (newSavedStatus) {
-          setSavedPrompts(prev => [...prev, { ...updatedPrompt, saved: true }]);
-        } else {
-          setSavedPrompts(prev => prev.filter(p => p.id !== id));
-        }
+      if (updatedPrompt.saved) {
+        setSavedPrompts(prev => [...prev, updatedPrompt]);
+      } else {
+        setSavedPrompts(prev => prev.filter(p => p.id !== id));
       }
       
     } catch (error) {
@@ -209,19 +235,19 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const createCategory = async (name: string) => {
     setIsLoading(true);
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
-      // Simple color generator for new categories
-      const colors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899"];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      
-      const newCategory: Category = {
-        id: `category-${Date.now()}`,
-        name,
-        color: randomColor,
-      };
-      
+      const response = await fetch(`${API_BASE_URL}/categories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create category");
+      }
+
+      const newCategory = await response.json();
       setCategories(prev => [...prev, newCategory]);
       toast.success("Category created successfully");
     } catch (error) {
@@ -232,8 +258,20 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  const getPromptsByCategory = (categoryId: string) => {
-    return prompts.filter(p => p.category === categoryId);
+  const getPromptsByCategory = async (categoryId: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/prompts`);
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch prompts by category");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Get prompts by category error:", error);
+      toast.error("Failed to load prompts");
+      return [];
+    }
   };
 
   return (
