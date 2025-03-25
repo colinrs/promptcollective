@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CategoryBadge from "@/components/common/CategoryBadge";
+import SocialShare from "@/components/common/SocialShare";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Heart, Bookmark, Copy, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -85,6 +86,9 @@ const PromptDetails = () => {
   const goBack = () => {
     navigate(-1);
   };
+
+  // Get the current page URL for sharing
+  const shareUrl = window.location.href;
 
   if (isLoading) {
     return (
@@ -170,7 +174,7 @@ const PromptDetails = () => {
           </Card>
           
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 mb-8">
             <Button
               variant="outline"
               className="gap-2 min-w-[100px]"
@@ -203,6 +207,16 @@ const PromptDetails = () => {
               <Copy className="h-5 w-5" />
               <span>Copy</span>
             </Button>
+          </div>
+          
+          {/* Social Sharing */}
+          <div className="border-t border-gray-200 pt-6 mt-6">
+            <h3 className="text-lg font-medium mb-4">Share this prompt</h3>
+            <SocialShare 
+              url={shareUrl} 
+              title={prompt.title} 
+              description={`Check out this awesome prompt: ${prompt.title}`} 
+            />
           </div>
         </div>
       </main>
