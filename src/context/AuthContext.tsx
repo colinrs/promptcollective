@@ -45,12 +45,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = await httpClient.post<LoginResponse>(API_CONFIG.USER_LOGIN, { email, password });
       
       const user = {
-        id: data.user_id,
+        id: data.userId,
         name: data.name,
         email: data.email,
         avatar: data.avatar,
         token: data.token,
-        expire_at: data.expire_at,
+        expireAt: data.expireAt,
       };
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
@@ -68,12 +68,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const data = await httpClient.post<LoginResponse>(API_CONFIG.USER_REGISTER, { name, email, password });
       const user = {
-        id: data.user_id,
+        id: data.userId,
         name: data.name,
         email: data.email,
         avatar: data.avatar,
         token: data.token,
-        expire_at: data.expire_at,
+        expire_at: data.expireAt,
       };
       
       setUser(user);

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -10,8 +10,27 @@ import { useAuth } from "@/context/AuthContext";
 
 const Favorites = () => {
   const navigate = useNavigate();
-  const { savedPrompts, isLoading } = usePrompts();
+  const { userSavePrompts } = usePrompts();
   const { isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [savedPrompts, setSavedPrompts] = useState([]);
+
+  useEffect(() => {
+    const fetchSavedPrompts = async () => {
+      try {
+        const prompts = await userSavePrompts();
+        setSavedPrompts(prompts);
+      } catch (error) {
+        console.error("Error fetching saved prompts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchSavedPrompts();
+    }
+  }, [userSavePrompts, isAuthenticated]);
 
   // Redirect if not authenticated
   if (!isAuthenticated) {

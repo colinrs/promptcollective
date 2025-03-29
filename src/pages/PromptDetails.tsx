@@ -9,14 +9,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CategoryBadge from "@/components/common/CategoryBadge";
 import SocialShare from "@/components/common/SocialShare";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Heart, Bookmark, Copy, MessageSquare } from "lucide-react";
+import { ArrowLeft, Heart, Bookmark, Copy } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 
 const PromptDetails = () => {
   const { promptId } = useParams<{ promptId: string }>();
   const navigate = useNavigate();
-  const { prompts, categories, likePrompt, savePrompt } = usePrompts();
+  const { getPrompt, likePrompt, savePrompt } = usePrompts();
   const [prompt, setPrompt] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,15 +24,10 @@ const PromptDetails = () => {
     const fetchPromptDetails = async () => {
       setIsLoading(true);
       try {
-        // In a real app, we'd fetch from an API
-        // Here we're using the context data
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const foundPrompt = prompts.find((p) => p.id === promptId);
-        
-        if (foundPrompt) {
-          setPrompt(foundPrompt);
+        const response = getPrompt(promptId);
+        if (response) {
+          setPrompt(response);
         } else {
-          // Handle prompt not found
           toast.error("Prompt not found");
           navigate("/gallery");
         }
@@ -47,11 +42,9 @@ const PromptDetails = () => {
     if (promptId) {
       fetchPromptDetails();
     }
-  }, [promptId, prompts, navigate]);
+  }, [promptId, navigate, getPrompt]);
 
-  const category = prompt?.category 
-    ? categories.find(c => c.id === prompt.category) 
-    : null;
+  const category = prompt?.category || null;
 
   const handleLike = () => {
     if (prompt) {

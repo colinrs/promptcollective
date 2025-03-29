@@ -3,12 +3,12 @@ import { API_CONFIG } from '../config/api';
 import { toast } from 'sonner';
 
 export interface LoginResponse {
-  user_id: string;
+  userId: string;
   name: string;
   email: string;
   avatar?: string;
   token: string;
-  expire_at: string;
+  expireAt: string;
 }
 
 interface ApiResponse<T> {
@@ -58,7 +58,18 @@ class HttpClient {
     this.instance.interceptors.response.use(
       <T>(response: AxiosResponse<ApiResponse<T>>) => {
         const { data } = response;
-        if (data.code !== 0) {
+        const errorHandlers = new Map([
+          [20007, { redirect: '/auth?mode=login', defaultMsg: '用户已存在，请登录' }],
+          [20008, { redirect: '/auth?mode=register', defaultMsg: '用户不存在，请注册' }]
+        ]);
+
+        const handler = errorHandlers.get(data.code);
+        if (handler) {
+          if (window.confirm(data.msg || handler.defaultMsg)) {
+            window.location.href = handler.redirect;
+          }
+          throw new Error(data.msg || handler.defaultMsg);
+        } else if (data.code !== 0) {
           throw new Error(data.msg || '请求失败');
         }
         return data.data;

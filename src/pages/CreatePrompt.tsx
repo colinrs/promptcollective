@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 // 从 PromptContext 导入 usePrompts 钩子函数
-import { usePrompts } from "@/context/PromptContext";
+import { usePrompts,Category } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import {
@@ -31,12 +31,12 @@ const CreatePrompt = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { 
+    isLoading,
     createPrompt, 
     updatePrompt, 
-    prompts, 
-    categories,
     createCategory,
-    isLoading 
+    getPrompt,
+    listCategory
   } = usePrompts();
   
   const [formData, setFormData] = useState<FormData>({
@@ -50,10 +50,19 @@ const CreatePrompt = () => {
     content: "",
     category: "",
   });
-  
+
+const [categories, setCategories] = useState<Category[]>([]);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  
+  useEffect(() => {
+    const loadCategories = async () => {
+      const categoriesList = await listCategory();
+      setCategories(categoriesList);
+    };
+    loadCategories();
+  }, [listCategory]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -65,23 +74,23 @@ const CreatePrompt = () => {
     // If promptId is provided, we're in edit mode
     if (promptId) {
       const findPromptToEdit = () => {
-        const promptToEdit = prompts.find(p => p.id === promptId);
-        if (promptToEdit) {
-          setFormData({
-            title: promptToEdit.title,
-            content: promptToEdit.content,
-            category: promptToEdit.category,
-          });
-          setIsEditMode(true);
-        } else {
-          // Prompt not found
-          toast.error("Prompt not found");
-          navigate("/my-prompts");
-        }
+        getPrompt(promptId).then(prompt => {
+          if (prompt) {
+            setFormData({
+              title: prompt.title,
+              content: prompt.content,
+              category: prompt.category,
+            });
+            setIsEditMode(true);
+          } else {
+            toast.error("Prompt not found");
+            navigate("/my-prompts");
+          }
+        });
       };
       findPromptToEdit();
     }
-  }, [promptId, navigate, prompts]);
+  }, [promptId, navigate, getPrompt]);
 
   const validateForm = () => {
     let valid = true;
@@ -122,7 +131,8 @@ const CreatePrompt = () => {
     
     try {
       if (isEditMode && promptId) {
-        await updatePrompt(promptId, {
+        await updatePrompt({
+          id: promptId,
           title: formData.title,
           content: formData.content,
           category: formData.category,
