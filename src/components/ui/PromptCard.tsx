@@ -15,10 +15,14 @@ interface PromptCardProps {
 }
 
 const PromptCard: React.FC<PromptCardProps> = ({ prompt, fullWidth = false }) => {
-  const { categories, likePrompt, savePrompt } = usePrompts();
+  const {likePrompt, savePrompt } = usePrompts();
   
-  const category = categories.find(c => c.id === prompt.category);
-  
+  const category = {
+    id: prompt.categoryId,
+    name: prompt.category,
+    color: prompt.categoryColor,
+  };
+
   const timeAgo = formatDistanceToNow(new Date(prompt.createdAt), {
     addSuffix: true,
   });
@@ -48,7 +52,7 @@ const PromptCard: React.FC<PromptCardProps> = ({ prompt, fullWidth = false }) =>
             <div className="flex items-center gap-3">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={prompt.createdBy.avatar || "/placeholder.svg"} />
-                <AvatarFallback>{prompt.createdBy.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{prompt.createdBy.name}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-sm font-medium">{prompt.createdBy.name}</p>

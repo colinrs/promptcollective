@@ -4,7 +4,7 @@ import { Category } from "@/context/PromptContext";
 
 interface CategoryBadgeProps {
   category: Category;
-  onClick?: (categoryId: string) => void;
+  onClick?: (categoryId: number) => void;
 }
 
 const CategoryBadge: React.FC<CategoryBadgeProps> = ({ category, onClick }) => {

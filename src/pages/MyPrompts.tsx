@@ -1,11 +1,11 @@
 
-import React, { useState } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PromptCard from "@/components/ui/PromptCard";
 import { Button } from "@/components/ui/button";
-import { usePrompts } from "@/context/PromptContext";
+import { usePrompts,Prompt,ListPromptResponse } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
 import {
   AlertDialog,
@@ -23,20 +23,20 @@ const MyPrompts = () => {
   const navigate = useNavigate();
   const { userPrompts, deletePrompt, isLoading } = usePrompts();
   const { isAuthenticated } = useAuth();
-  const [promptToDelete, setPromptToDelete] = useState<string | null>(null);
+  const [userListPrompts, setUserListPrompts] = useState<ListPromptResponse>(null);
 
-  // Redirect if not authenticated
-  if (!isAuthenticated) {
-    navigate("/auth?mode=login");
-    return null;
-  }
-
-  const handleDeletePrompt = async () => {
-    if (promptToDelete) {
-      await deletePrompt(promptToDelete);
-      setPromptToDelete(null);
+  useEffect(() => {
+    // Redirect if not authenticated
+    if (!isAuthenticated) {
+      navigate("/auth?mode=login");
+      return;
     }
-  };
+    const fetchUserListPrompts = async () => {
+      const prompts = await userPrompts();
+      setUserListPrompts(prompts);
+    };
+    fetchUserListPrompts();
+  }, [isAuthenticated, userPrompts, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -66,9 +66,9 @@ const MyPrompts = () => {
                 <div className="h-3 w-24 bg-gray-200 rounded"></div>
               </div>
             </div>
-          ) : userPrompts.length > 0 ? (
+          ) : userListPrompts?.list.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userPrompts.map(prompt => (
+              {userListPrompts?.list.map(prompt => (
                 <div key={prompt.id} className="relative group">
                   <PromptCard prompt={prompt} />
                   

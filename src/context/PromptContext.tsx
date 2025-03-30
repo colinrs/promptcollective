@@ -9,7 +9,9 @@ export interface Prompt {
   id: string;
   title: string;
   content: string;
+  categoryId: number;
   category: string;
+  categoryColor: string;
   createdAt: string;
   updatedAt: string;
   createdBy: {
@@ -22,25 +24,44 @@ export interface Prompt {
   saved?: boolean;
 }
 
+export interface ListPromptResponse {
+  list: Prompt[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
+
+
 export interface Category {
-  id: string;
+  id: number;
   name: string;
   color: string;
 }
 
+export interface ListCategoryResponse {
+  list: Category[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
 interface PromptContextType {
-  userSavePrompts: () => Promise<Prompt[]>;
-  userLikePrompts: () => Promise<Prompt[]>;
+  isLoading: boolean;
+  userSavePrompts: () => Promise<ListPromptResponse>;
+  userLikePrompts: () => Promise<ListPromptResponse>;
+  userPrompts: () => Promise<ListPromptResponse>;
   getPrompt: (id: string) => Promise<Prompt>;
-  listPrompt: () => Promise<Prompt[]>;
-  createPrompt: (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy">) => Promise<void>;
+  listPrompt: () => Promise<ListPromptResponse>;
+  searchListPrompt: (title: string,content: string, categoryId:number, sort:string) => Promise<ListPromptResponse>;
+  createPrompt: (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy" | "category" | "categoryColor">) => Promise<void>;
   updatePrompt: (prompt: Partial<Prompt>) => Promise<void>;
   deletePrompt: (id: string) => Promise<void>;
   likePrompt: (id: string) => Promise<void>;
   savePrompt: (id: string) => Promise<void>;
   createCategory: (name: string) => Promise<void>;
-  listCategory: () => Promise<Category[]>;
-  getPromptsByCategory: (categoryId: string) => Promise<Prompt[]>;
+  listCategory: () => Promise<ListCategoryResponse>;
+  getPromptsByCategory: (categoryId: string) => Promise<ListPromptResponse>;
 }
 
 const PromptContext = createContext<PromptContextType | undefined>(undefined);
@@ -69,13 +90,13 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const listPrompt = async () => {
     setIsLoading(true);
     try {
-      const response = await httpClient.get<Prompt[]>(API_CONFIG.GET_PROMPTS);
+      const response = await httpClient.get<ListPromptResponse>(API_CONFIG.GET_PROMPTS);
       toast.success("Prompt get successfully");
       return response;
     } catch (error) {
       toast.error("Failed get prompt");
       console.error("List prompts error:", error);
-      return [];
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +111,30 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (error) {
       toast.error("Failed to create prompt");
       console.error("Create prompt error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const searchListPrompt = async (title: string, content: string, categoryId: number, sort: string) => {
+    setIsLoading(true);
+    try {
+      // 构建查询参数，只有当参数有值时才添加
+      const params = new URLSearchParams();
+      if (title) params.append('title', title);
+      if (content) params.append('content', content);
+      if (categoryId) params.append('category_id', categoryId.toString());
+      if (sort) params.append('sort', sort);
+      
+      const queryString = params.toString();
+      const url = queryString ? `${API_CONFIG.SEARCH_PROMPTS}?${queryString}` : API_CONFIG.SEARCH_PROMPTS;
+      
+      const resp = await httpClient.get<ListPromptResponse>(url);
+      toast.success("Prompts retrieved successfully");
+      return resp;
+    } catch (error) {
+      toast.error("Failed to search prompts");
+      console.error("Search prompts error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -154,25 +199,37 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const userSavePrompts = async () => {
     try {
-      const resp =  await httpClient.get<Prompt[]>(`${API_CONFIG.USER_PROMPTS_SAVE}`);
+      const resp =  await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_SAVE}`);
       return resp;
     } catch (error) {
       toast.error("Failed to update saved status");
       console.error("Save prompt error:", error);
-      return [];
+      return null;
     }
   };
 
   const userLikePrompts = async () => {
     try {
-      const resp =  await httpClient.get<Prompt[]>(`${API_CONFIG.USER_PROMPTS_LIKE}`);
+      const resp =  await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_LIKE}`);
       return resp;
     } catch (error) {
       toast.error("Failed to update saved status");
       console.error("Save prompt error:", error);
-      return [];
+      return null;
     }
   };
+
+  const userPrompts = async () => {
+    try {
+      const resp =  await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_LIST}`);
+      return resp;
+    } catch (error) {
+      toast.error("Failed to update saved status");
+      console.error("Save prompt error:", error);
+      return null;
+    }
+  };
+
   const createCategory = async (name: string) => {
     setIsLoading(true);
     try {
@@ -189,13 +246,13 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const listCategory = async () => {
     setIsLoading(true);
     try {
-      const resp =  await httpClient.get<Category[]>(`${API_CONFIG.LIST_CATEGORY}`);
+      const resp =  await httpClient.get<ListCategoryResponse>(`${API_CONFIG.LIST_CATEGORY}`);
       toast.success("Prompt created successfully");
       return resp;
     } catch (error) {
       toast.error("Failed to create prompt");
       console.error("Create prompt error:", error);
-      return [];
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -203,19 +260,21 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const getPromptsByCategory = async (categoryId: string) => {
     try {
-      return await httpClient.get<Prompt[]>(`${API_CONFIG.CREATE_CATEGORY}?category_id=${categoryId}`);
+      return await httpClient.get<ListPromptResponse>(`${API_CONFIG.CREATE_CATEGORY}?category_id=${categoryId}`);
     } catch (error) {
       console.error("Get prompts by category error:", error);
       toast.error("Failed to load prompts");
-      return [];
+      return null;
     }
   };
 
   return (
     <PromptContext.Provider
       value={{
+        isLoading,
         userSavePrompts,
         userLikePrompts,
+        userPrompts,
         getPrompt,
         listPrompt,
         createPrompt,
@@ -225,6 +284,7 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         savePrompt,
         createCategory,
         listCategory,
+        searchListPrompt,
         getPromptsByCategory,
       }}
     >

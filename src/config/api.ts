@@ -19,6 +19,7 @@ export const API_CONFIG = {
   USER_REGISTER: '/v1/user/register',
   USER_PROMPTS_SAVE: '/v1/user/prompts/save',
   USER_PROMPTS_LIKE: '/v1/user/prompts/like',
+  USER_PROMPTS_LIST: '/v1/user/prompt/list',
   // Category API
   CREATE_CATEGORY: '/v1/category/create',
   LIST_CATEGORY: '/v1/category/list',
@@ -30,5 +31,6 @@ export const API_CONFIG = {
   LIKE_PROMPT: '/v1/prompt/like',
   UNLIKE_PROMPT: '/v1/prompt/unlike',
   GET_PROMPT_BY_ID: '/v1/prompt/get',
+  SEARCH_PROMPTS: '/v1/prompt/search',
   GET_PROMPT_BY_CATEGORY_ID: '/v1/prompt/list_by_category',
 } as const;

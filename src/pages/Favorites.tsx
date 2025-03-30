@@ -1,27 +1,27 @@
 
-import React, { useState, useEffect } from "react";
+import {useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PromptCard from "@/components/ui/PromptCard";
 import { Button } from "@/components/ui/button";
-import { usePrompts } from "@/context/PromptContext";
+import { usePrompts,Prompt } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
 
 const Favorites = () => {
   const navigate = useNavigate();
   const { userSavePrompts } = usePrompts();
   const { isAuthenticated } = useAuth();
+  const [savedPrompts, setSavedPrompts] = useState<Prompt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [savedPrompts, setSavedPrompts] = useState([]);
 
   useEffect(() => {
     const fetchSavedPrompts = async () => {
       try {
         const prompts = await userSavePrompts();
-        setSavedPrompts(prompts);
+        setSavedPrompts(prompts?.list);
       } catch (error) {
-        console.error("Error fetching saved prompts:", error);
+        console.error("Failed to fetch saved prompts:", error);
       } finally {
         setIsLoading(false);
       }
@@ -30,7 +30,7 @@ const Favorites = () => {
     if (isAuthenticated) {
       fetchSavedPrompts();
     }
-  }, [userSavePrompts, isAuthenticated]);
+  }, [isAuthenticated, userSavePrompts]);
 
   // Redirect if not authenticated
   if (!isAuthenticated) {
@@ -60,9 +60,9 @@ const Favorites = () => {
                 <div className="h-3 w-24 bg-gray-200 rounded"></div>
               </div>
             </div>
-          ) : savedPrompts.length > 0 ? (
+          ) : savedPrompts?.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {savedPrompts.map(prompt => (
+              {savedPrompts?.map(prompt => (
                 <PromptCard key={prompt.id} prompt={prompt} />
               ))}
             </div>

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { usePrompts } from "@/context/PromptContext";
+import { usePrompts,Prompt } from "@/context/PromptContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -17,14 +17,14 @@ const PromptDetails = () => {
   const { promptId } = useParams<{ promptId: string }>();
   const navigate = useNavigate();
   const { getPrompt, likePrompt, savePrompt } = usePrompts();
-  const [prompt, setPrompt] = useState<any>(null);
+  const [prompt, setPrompt] = useState<Prompt>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPromptDetails = async () => {
       setIsLoading(true);
       try {
-        const response = getPrompt(promptId);
+        const response = await getPrompt(promptId);
         if (response) {
           setPrompt(response);
         } else {
@@ -44,7 +44,11 @@ const PromptDetails = () => {
     }
   }, [promptId, navigate, getPrompt]);
 
-  const category = prompt?.category || null;
+  const category = {
+    id: prompt?.categoryId,
+    name: prompt?.category,
+    color: prompt?.categoryColor, // Assuming categoryColor is a string like "#ff0000"
+  }
 
   const handleLike = () => {
     if (prompt) {

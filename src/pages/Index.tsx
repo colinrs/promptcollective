@@ -1,21 +1,26 @@
 
-import React from "react";
+import {useState,useEffect} from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PromptCard from "@/components/ui/PromptCard";
-import { usePrompts } from "@/context/PromptContext";
+import { usePrompts,Prompt } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
 
 const Index = () => {
-  const { prompts } = usePrompts();
+  const { listPrompt } = usePrompts();
   const { isAuthenticated } = useAuth();
-  
-  // Get the top 3 most liked prompts
-  const popularPrompts = [...prompts]
-    .sort((a, b) => b.likes - a.likes)
-    .slice(0, 3);
+  const [popularPrompts, setPopularPrompts] = useState<Prompt[]>([]);
+
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      const listPromptResponse = await listPrompt();
+      const prompts = listPromptResponse.list;
+      setPopularPrompts(prompts);
+    };
+    fetchPrompts();
+  }, [listPrompt]);
 
   return (
     <div className="min-h-screen flex flex-col">

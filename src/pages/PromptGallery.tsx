@@ -6,46 +6,41 @@ import PromptCard from "@/components/ui/PromptCard";
 import CategoryBadge from "@/components/common/CategoryBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { usePrompts } from "@/context/PromptContext";
+import { usePrompts,ListPromptResponse, ListCategoryResponse } from "@/context/PromptContext";
 import { Link } from "react-router-dom";
 
 const PromptGallery = () => {
-  const { prompts, categories, isLoading } = usePrompts();
+  const {searchListPrompt, listCategory,isLoading } = usePrompts();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<"newest" | "popular">("newest");
-  const [filteredPrompts, setFilteredPrompts] = useState(prompts);
+  const [searchPrompts, setSearchPrompts] = useState<ListPromptResponse>(null);
+  const [listCategories, setListCategories] = useState<ListCategoryResponse>(null);
 
   useEffect(() => {
-    let result = [...prompts];
-    
-    // Apply search filter
-    if (searchTerm) {
-      result = result.filter(
-        prompt =>
-          prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          prompt.content.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    // Apply category filter
-    if (selectedCategory) {
-      result = result.filter(prompt => prompt.category === selectedCategory);
-    }
-    
-    // Apply sorting
-    result = result.sort((a, b) => {
-      if (sortOption === "newest") {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      } else {
-        return b.likes - a.likes;
+    const fetchPrompts = async () => {
+      try {
+        const response = await searchListPrompt(
+          searchTerm.toLowerCase(), searchTerm.toLowerCase(),
+          selectedCategory, sortOption);
+        setSearchPrompts(response);
+      } catch (error) {
+        console.error("Error fetching prompts:", error);
       }
-    });
-    
-    setFilteredPrompts(result);
-  }, [prompts, searchTerm, selectedCategory, sortOption]);
+    }
+    const fetchCategories = async () => {
+      try {
+        const response = await listCategory();
+        setListCategories(response);
+      } catch (error) {
+        console.error("Error fetching prompts:", error);
+      }
+    }
+    fetchPrompts();
+    fetchCategories();
+  }, [searchListPrompt, listCategory,searchTerm, selectedCategory, sortOption]);
 
-  const handleCategorySelect = (categoryId: string) => {
+  const handleCategorySelect = (categoryId: number) => {
     setSelectedCategory(prevCategory => 
       prevCategory === categoryId ? null : categoryId
     );
@@ -112,7 +107,7 @@ const PromptGallery = () => {
             
             {/* Categories */}
             <div className="mt-4 flex flex-wrap gap-2">
-              {categories.map(category => (
+              {listCategories?.list.map(category => (
                 <div
                   key={category.id}
                   onClick={() => handleCategorySelect(category.id)}
@@ -137,9 +132,9 @@ const PromptGallery = () => {
                 <div className="h-3 w-24 bg-gray-200 rounded"></div>
               </div>
             </div>
-          ) : filteredPrompts.length > 0 ? (
+          ) : searchPrompts?.list.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPrompts.map(prompt => (
+              {searchPrompts?.list.map(prompt => (
                 <PromptCard key={prompt.id} prompt={prompt} />
               ))}
             </div>

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import { API_CONFIG } from '../config/api';
 import { toast } from 'sonner';
+import { debug } from 'console';
 
 export interface LoginResponse {
   userId: string;
@@ -40,12 +41,16 @@ class HttpClient {
     // 请求拦截器
     this.instance.interceptors.request.use(
       (config) => {
-        const user = localStorage.getItem('user');
-        if (user) {
-          const { user_json } = JSON.parse(user);
-          if (user_json.token) {
-            config.headers.Authorization = `Bearer ${user_json.token}`;
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            if (user?.token) {
+            config.headers.Authorization = `Bearer ${user.token}`;
           }
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+        }
         }
         return config;
       },

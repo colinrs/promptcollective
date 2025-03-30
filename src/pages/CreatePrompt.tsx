@@ -24,6 +24,7 @@ interface FormData {
   title: string;
   content: string;
   category: string;
+  categoryId: number;
 }
 
 const CreatePrompt = () => {
@@ -43,12 +44,13 @@ const CreatePrompt = () => {
     title: "",
     content: "",
     category: "",
+    categoryId: null,
   });
   
   const [errors, setErrors] = useState({
     title: "",
     content: "",
-    category: "",
+    categoryId: "",
   });
 
 const [categories, setCategories] = useState<Category[]>([]);
@@ -59,7 +61,7 @@ const [categories, setCategories] = useState<Category[]>([]);
   useEffect(() => {
     const loadCategories = async () => {
       const categoriesList = await listCategory();
-      setCategories(categoriesList);
+      setCategories(categoriesList?.list);
     };
     loadCategories();
   }, [listCategory]);
@@ -80,6 +82,7 @@ const [categories, setCategories] = useState<Category[]>([]);
               title: prompt.title,
               content: prompt.content,
               category: prompt.category,
+              categoryId: prompt.categoryId,
             });
             setIsEditMode(true);
           } else {
@@ -94,7 +97,7 @@ const [categories, setCategories] = useState<Category[]>([]);
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = { title: "", content: "", category: "" };
+    const newErrors = { title: "", content: "", categoryId: "" };
     
     if (!formData.title.trim()) {
       newErrors.title = "Title is required";
@@ -106,8 +109,8 @@ const [categories, setCategories] = useState<Category[]>([]);
       valid = false;
     }
     
-    if (!formData.category) {
-      newErrors.category = "Category is required";
+    if (!formData.categoryId) {
+      newErrors.categoryId = "Category is required";
       valid = false;
     }
     
@@ -119,7 +122,11 @@ const [categories, setCategories] = useState<Category[]>([]);
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === "category") {
+      setFormData(prev => ({ ...prev, categoryId: Number(value) }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -142,7 +149,7 @@ const [categories, setCategories] = useState<Category[]>([]);
         await createPrompt({
           title: formData.title,
           content: formData.content,
-          category: formData.category,
+          categoryId: formData.categoryId,
         });
         toast.success("Prompt created successfully");
       }
@@ -254,10 +261,10 @@ const [categories, setCategories] = useState<Category[]>([]);
               <select
                 id="category"
                 name="category"
-                value={formData.category}
+                value={formData.categoryId}
                 onChange={handleChange}
                 className={`w-full rounded-md border ${
-                  errors.category ? "border-red-500" : "border-input"
+                  errors.categoryId ? "border-red-500" : "border-input"
                 } px-3 py-2`}
               >
                 <option value="" disabled>
@@ -269,8 +276,8 @@ const [categories, setCategories] = useState<Category[]>([]);
                   </option>
                 ))}
               </select>
-              {errors.category && (
-                <p className="text-sm text-red-500">{errors.category}</p>
+              {errors.categoryId && (
+                <p className="text-sm text-red-500">{errors.categoryId}</p>
               )}
             </div>
             
