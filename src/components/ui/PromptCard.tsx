@@ -1,5 +1,5 @@
 
-import React from "react";
+import {useState} from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -14,8 +14,9 @@ interface PromptCardProps {
   fullWidth?: boolean;
 }
 
-const PromptCard: React.FC<PromptCardProps> = ({ prompt, fullWidth = false }) => {
+const PromptCard: React.FC<PromptCardProps> = ({ prompt: initialPrompt, fullWidth = false }) => {
   const {likePrompt, savePrompt } = usePrompts();
+  const [prompt, setPrompt] = useState(initialPrompt);
   
   const category = {
     id: prompt.categoryId,
@@ -29,14 +30,25 @@ const PromptCard: React.FC<PromptCardProps> = ({ prompt, fullWidth = false }) =>
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-    likePrompt(prompt.id);
+    e.stopPropagation(); 
+    const action = prompt.liked ? "unlike" : "like";
+    setPrompt(prev => ({
+      ...prev,
+      liked: !prev.liked,
+      likes: prev.liked ? prev.likes - 1 : prev.likes + 1
+    }));
+    likePrompt(prompt.id, action);
   };
 
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    savePrompt(prompt.id);
+    const action = prompt.saved ? "unSave" : "save";
+    setPrompt(prev => ({
+      ...prev,
+      saved: !prev.saved
+    }));
+    savePrompt(prompt.id, action);
   };
 
   return (

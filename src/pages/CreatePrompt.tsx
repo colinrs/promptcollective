@@ -44,7 +44,7 @@ const CreatePrompt = () => {
     title: "",
     content: "",
     category: "",
-    categoryId: null,
+    categoryId: 0,
   });
   
   const [errors, setErrors] = useState({

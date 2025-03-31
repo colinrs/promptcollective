@@ -6,7 +6,7 @@ import { httpClient } from "../lib/api";
 //import { mockPrompts, mockCategories } from "../utils/mockData";
 
 export interface Prompt {
-  id: string;
+  id: number;
   title: string;
   content: string;
   categoryId: number;
@@ -56,9 +56,9 @@ interface PromptContextType {
   searchListPrompt: (title: string,content: string, categoryId:number, sort:string) => Promise<ListPromptResponse>;
   createPrompt: (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy" | "category" | "categoryColor">) => Promise<void>;
   updatePrompt: (prompt: Partial<Prompt>) => Promise<void>;
-  deletePrompt: (id: string) => Promise<void>;
-  likePrompt: (id: string) => Promise<void>;
-  savePrompt: (id: string) => Promise<void>;
+  deletePrompt: (id: number) => Promise<void>;
+  likePrompt: (id: number,action: string) => Promise<void>;
+  savePrompt: (id: number,action: string) => Promise<void>;
   createCategory: (name: string) => Promise<void>;
   listCategory: () => Promise<ListCategoryResponse>;
   getPromptsByCategory: (categoryId: string) => Promise<ListPromptResponse>;
@@ -105,7 +105,7 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const getPrompt = async (id: string) => {
     setIsLoading(true);
     try {
-      const resp =  await httpClient.get<Prompt>(`${API_CONFIG.GET_PROMPT_BY_ID}?id=${id}`);
+      const resp =  await httpClient.get<Prompt>(`${API_CONFIG.GET_PROMPT_BY_ID}?promptId=${id}`);
       toast.success("Prompt created successfully");
       return resp;
     } catch (error) {
@@ -166,10 +166,10 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  const deletePrompt = async (id: string) => {
+  const deletePrompt = async (id: number) => {
     setIsLoading(true);
     try {
-      await httpClient.delete(`${API_CONFIG.DELETE_PROMPT}?id=${id}`);
+      await httpClient.delete(`${API_CONFIG.DELETE_PROMPT}?promptId=${id}`);
       toast.success("Prompt deleted successfully");
     } catch (error) {
       toast.error("Failed to delete prompt");
@@ -179,18 +179,18 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  const likePrompt = async (id: string) => {
+  const likePrompt = async (id: number,action: string) => {
     try {
-      await httpClient.post<Prompt>(`${API_CONFIG.LIKE_PROMPT}?id=${id}`);
+      await httpClient.post<Prompt>(`${API_CONFIG.LIKE_PROMPT}`,{"promptId":id, "action":action});
     } catch (error) {
       toast.error("Failed to update like status");
       console.error("Like prompt error:", error);
     }
   };
 
-  const savePrompt = async (id: string) => {
+  const savePrompt = async (id: number,action: string) => {
     try {
-      await httpClient.post<Prompt>(`${API_CONFIG.UPDATE_PROMPT}`);
+      await httpClient.post<Prompt>(`${API_CONFIG.SAVE_PROMPTS}`,{"promptId":id, "action":action});
     } catch (error) {
       toast.error("Failed to update saved status");
       console.error("Save prompt error:", error);

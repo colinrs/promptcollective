@@ -52,7 +52,8 @@ const PromptDetails = () => {
 
   const handleLike = () => {
     if (prompt) {
-      likePrompt(prompt.id);
+      const action = prompt.liked ? "unlike" : "like";
+      likePrompt(prompt.id, action);
       // Update local state to show immediate feedback
       setPrompt(prev => ({
         ...prev,
@@ -64,7 +65,8 @@ const PromptDetails = () => {
 
   const handleSave = () => {
     if (prompt) {
-      savePrompt(prompt.id);
+      const action = prompt.saved ? "unSave" : "save";
+      savePrompt(prompt.id, action);
       // Update local state
       setPrompt(prev => ({
         ...prev,
@@ -73,10 +75,37 @@ const PromptDetails = () => {
     }
   };
 
-  const handleCopyPrompt = () => {
-    if (prompt) {
-      navigator.clipboard.writeText(prompt.content);
+  const handleCopyPrompt = async () => {
+    if (!prompt || !prompt.content) {
+      toast.error("No content to copy");
+      return;
+    }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(prompt.content);
+      } else {
+        // Fallback for browsers that don't support the clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = prompt.content;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          textArea.remove();
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+          textArea.remove();
+          throw new Error('Copy failed');
+        }
+      }
       toast.success("Prompt copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy prompt:", error);
+      toast.error("Failed to copy prompt to clipboard");
     }
   };
 
@@ -146,7 +175,7 @@ const PromptDetails = () => {
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={prompt.createdBy.avatar || "/placeholder.svg"} />
-                  <AvatarFallback>{prompt.createdBy.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{prompt.createdBy.name}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-medium">{prompt.createdBy.name}</p>

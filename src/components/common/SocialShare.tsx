@@ -26,8 +26,33 @@ const SocialShare: React.FC<SocialShareProps> = ({ url, title, description = "" 
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(url);
-    toast.success("Link copied to clipboard");
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url);
+      } else {
+        // Fallback for browsers that don't support the clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          textArea.remove();
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+          textArea.remove();
+          throw new Error('Copy failed');
+        }
+      }
+      toast.success("Link copied to clipboard");
+    } catch (error) {
+      console.error("Link to copy prompt:", error);
+      toast.error("Link to copy prompt to clipboard");
+    }
   };
 
   return (
