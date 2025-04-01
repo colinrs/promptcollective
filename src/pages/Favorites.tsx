@@ -7,11 +7,13 @@ import PromptCard from "@/components/ui/PromptCard";
 import { Button } from "@/components/ui/button";
 import { usePrompts,Prompt } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Favorites = () => {
   const navigate = useNavigate();
   const { userSavePrompts } = usePrompts();
   const { isAuthenticated } = useAuth();
+  const { t } = useLanguage();
   const [savedPrompts, setSavedPrompts] = useState<Prompt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,9 +47,9 @@ const Favorites = () => {
       <main className="flex-1 pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">My Saved Prompts</h1>
+            <h1 className="text-3xl font-bold mb-2">{t('favorites.title')}</h1>
             <p className="text-gray-600">
-              Prompts you've saved for quick access
+              {t('favorites.description')}
             </p>
           </div>
           
@@ -68,12 +70,12 @@ const Favorites = () => {
             </div>
           ) : (
             <div className="text-center py-16">
-              <h3 className="text-xl font-semibold mb-2">No saved prompts yet</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('favorites.empty.title')}</h3>
               <p className="text-gray-600 mb-6">
-                Browse the gallery and save prompts you like
+                {t('favorites.empty.description')}
               </p>
               <Button onClick={() => navigate("/gallery")}>
-                Explore Prompts
+                {t('favorites.empty.action')}
               </Button>
             </div>
           )}

@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -20,6 +21,7 @@ const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { login, register, isAuthenticated, isLoading } = useAuth();
+  const { t } = useLanguage();
   
   const [mode, setMode] = useState<"login" | "register">("login");
   const [formData, setFormData] = useState({
@@ -56,25 +58,25 @@ const Auth = () => {
     
     // Validate email
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = t('auth.emailRequired');
       valid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = t('auth.emailInvalid');
       valid = false;
     }
     
     // Validate password
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = t('auth.passwordRequired');
       valid = false;
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+      newErrors.password = t('auth.passwordLength');
       valid = false;
     }
     
     // Validate name for register mode
     if (mode === "register" && !formData.name) {
-      newErrors.name = "Name is required";
+      newErrors.name = t('auth.nameRequired');
       valid = false;
     }
     
@@ -116,12 +118,12 @@ const Auth = () => {
           <Card className="border-border/50 shadow-lg animate-scale-in">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold">
-                {mode === "login" ? "Welcome back" : "Create an account"}
+                {mode === "login" ? t('auth.login.title') : t('auth.register.title')}
               </CardTitle>
               <CardDescription>
                 {mode === "login"
-                  ? "Enter your email and password to log in"
-                  : "Enter your details to create an account"}
+                  ? t('auth.login.description')
+                  : t('auth.register.description')}
               </CardDescription>
             </CardHeader>
             
@@ -129,7 +131,7 @@ const Auth = () => {
               <CardContent className="space-y-4">
                 {mode === "register" && (
                   <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="name">{t('auth.name')}</Label>
                     <Input
                       id="name"
                       name="name"
@@ -145,7 +147,7 @@ const Auth = () => {
                 )}
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('auth.email')}</Label>
                   <Input
                     id="email"
                     name="email"
@@ -162,7 +164,7 @@ const Auth = () => {
                 
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{t('auth.password')}</Label>
                     {mode === "login" && (
                       <Link
                         to="/forgot-password"
@@ -215,25 +217,25 @@ const Auth = () => {
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                         ></path>
                       </svg>
-                      {mode === "login" ? "Logging in..." : "Creating account..."}
+                      {mode === "login" ? t('auth.submit.login') + '...' : t('auth.submit.register') + '...'}
                     </>
                   ) : mode === "login" ? (
-                    "Log In"
+                    t('auth.submit.login')
                   ) : (
-                    "Create Account"
+                    t('auth.submit.register')
                   )}
                 </Button>
                 
                 <p className="text-sm text-center text-gray-500">
                   {mode === "login"
-                    ? "Don't have an account? "
-                    : "Already have an account? "}
+                    ? t('auth.switchMode.register')
+                    : t('auth.switchMode.login')}
                   <button
                     type="button"
                     onClick={toggleMode}
                     className="text-primary hover:underline font-medium"
                   >
-                    {mode === "login" ? "Sign up" : "Log in"}
+                    {mode === "login" ? t('auth.submit.register') : t('auth.submit.login')}
                   </button>
                 </p>
               </CardFooter>

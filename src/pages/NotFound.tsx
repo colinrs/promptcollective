@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { useLanguage } from "@/context/LanguageContext";
 
 const NotFound = () => {
   const location = useLocation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     console.error(
@@ -24,16 +26,16 @@ const NotFound = () => {
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="text-center max-w-md mx-auto">
           <div className="text-primary text-9xl font-bold mb-4">404</div>
-          <h1 className="text-4xl font-bold mb-4">Page not found</h1>
+          <h1 className="text-4xl font-bold mb-4">{t('notFound.title')}</h1>
           <p className="text-xl text-gray-600 mb-8">
-            The page you're looking for doesn't exist or has been moved.
+            {t('notFound.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
-              <Link to="/">Go to Homepage</Link>
+              <Link to="/">{t('notFound.actions.home')}</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/gallery">Explore Prompts</Link>
+              <Link to="/gallery">{t('notFound.actions.explore')}</Link>
             </Button>
           </div>
         </div>

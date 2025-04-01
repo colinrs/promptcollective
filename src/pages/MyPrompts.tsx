@@ -7,6 +7,7 @@ import PromptCard from "@/components/ui/PromptCard";
 import { Button } from "@/components/ui/button";
 import { usePrompts,Prompt,ListPromptResponse } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +24,7 @@ const MyPrompts = () => {
   const navigate = useNavigate();
   const { userPrompts, deletePrompt, isLoading } = usePrompts();
   const { isAuthenticated } = useAuth();
+  const { t } = useLanguage();
   const [userListPrompts, setUserListPrompts] = useState<ListPromptResponse>(null);
 
   useEffect(() => {
@@ -46,14 +48,14 @@ const MyPrompts = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">My Prompts</h1>
+              <h1 className="text-3xl font-bold mb-2">{t('myPrompts.title')}</h1>
               <p className="text-gray-600">
-                Manage your created prompts
+                {t('myPrompts.description')}
               </p>
             </div>
             
             <Button onClick={() => navigate("/create")}>
-              Create New Prompt
+              {t('myPrompts.createNew')}
             </Button>
           </div>
           
@@ -81,7 +83,7 @@ const MyPrompts = () => {
                         onClick={() => navigate(`/edit/${prompt.id}`)}
                         className="shadow-md"
                       >
-                        Edit
+                        {t('myPrompts.actions.edit')}
                       </Button>
                       
                       <AlertDialog>
@@ -91,15 +93,14 @@ const MyPrompts = () => {
                             variant="destructive"
                             className="shadow-md"
                           >
-                            Delete
+                            {t('myPrompts.actions.delete')}
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogTitle>{t('myPrompts.deleteConfirm.title')}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete your
-                              prompt.
+                              {t('myPrompts.deleteConfirm.description')}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -120,12 +121,12 @@ const MyPrompts = () => {
             </div>
           ) : (
             <div className="text-center py-16">
-              <h3 className="text-xl font-semibold mb-2">No prompts created yet</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('myPrompts.empty.title')}</h3>
               <p className="text-gray-600 mb-6">
-                Create your first prompt to get started
+                {t('myPrompts.empty.description')}
               </p>
               <Button onClick={() => navigate("/create")}>
-                Create Your First Prompt
+                {t('myPrompts.empty.action')}
               </Button>
             </div>
           )}

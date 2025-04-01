@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useLanguage } from "@/context/LanguageContext";
 // 从 PromptContext 导入 usePrompts 钩子函数
 import { usePrompts,Category } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
@@ -31,6 +32,7 @@ const CreatePrompt = () => {
   const { promptId } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t } = useLanguage();
   const { 
     isLoading,
     createPrompt, 
@@ -100,17 +102,17 @@ const [categories, setCategories] = useState<Category[]>([]);
     const newErrors = { title: "", content: "", categoryId: "" };
     
     if (!formData.title.trim()) {
-      newErrors.title = "Title is required";
+      newErrors.title = t('create.validation.title');
       valid = false;
     }
     
     if (!formData.content.trim()) {
-      newErrors.content = "Content is required";
+      newErrors.content = t('create.validation.content');
       valid = false;
     }
     
     if (!formData.categoryId) {
-      newErrors.categoryId = "Category is required";
+      newErrors.categoryId = t('create.validation.category');
       valid = false;
     }
     
@@ -178,24 +180,24 @@ const [categories, setCategories] = useState<Category[]>([]);
         <div className="container mx-auto max-w-3xl">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">
-              {isEditMode ? "Edit Prompt" : "Create New Prompt"}
+              {isEditMode ? t('create.editTitle') : t('create.title')}
             </h1>
             <p className="text-gray-600">
               {isEditMode
-                ? "Update your prompt details below"
-                : "Fill in the details to create a new prompt"}
+                ? t('create.editDescription')
+                : t('create.description')}
             </p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title">{t('create.form.title')}</Label>
               <Input
                 id="title"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="E.g. Blog Post Generator"
+                placeholder={t('create.form.titlePlaceholder')}
                 className={errors.title ? "border-red-500" : ""}
               />
               {errors.title && (
@@ -204,13 +206,13 @@ const [categories, setCategories] = useState<Category[]>([]);
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="content">Prompt Content</Label>
+              <Label htmlFor="content">{t('create.form.content')}</Label>
               <Textarea
                 id="content"
                 name="content"
                 value={formData.content}
                 onChange={handleChange}
-                placeholder="Enter your prompt content here. Use placeholders like {topic} or {style} for variables."
+                placeholder={t('create.form.contentPlaceholder')}
                 className={`min-h-[200px] resize-y ${
                   errors.content ? "border-red-500" : ""
                 }`}
@@ -225,16 +227,16 @@ const [categories, setCategories] = useState<Category[]>([]);
             
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">{t('create.form.category')}</Label>
                 <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                   <DialogTrigger asChild>
                     <Button variant="outline" size="sm" type="button">
-                      Create Category
+                      {t('create.form.createCategory')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Create New Category</DialogTitle>
+                      <DialogTitle>{t('create.form.newCategory')}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div className="space-y-2">
@@ -268,7 +270,7 @@ const [categories, setCategories] = useState<Category[]>([]);
                 } px-3 py-2`}
               >
                 <option value="" disabled>
-                  Select a category
+                  {t('create.form.selectCategory')}
                 </option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
@@ -287,7 +289,7 @@ const [categories, setCategories] = useState<Category[]>([]);
                 variant="outline"
                 onClick={() => navigate(-1)}
               >
-                Cancel
+                {t('create.form.cancel')}
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
@@ -312,12 +314,12 @@ const [categories, setCategories] = useState<Category[]>([]);
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    {isEditMode ? "Updating..." : "Creating..."}
+                    {isEditMode ? t('create.form.updating') : t('create.form.creating')}
                   </>
                 ) : isEditMode ? (
-                  "Update Prompt"
+                  t('create.form.update')
                 ) : (
-                  "Create Prompt"
+                  t('create.form.submit')
                 )}
               </Button>
             </div>

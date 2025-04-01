@@ -7,10 +7,12 @@ import Footer from "@/components/layout/Footer";
 import PromptCard from "@/components/ui/PromptCard";
 import { usePrompts,Prompt } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Index = () => {
   const { listPrompt } = usePrompts();
   const { isAuthenticated } = useAuth();
+  const { t } = useLanguage();
   const [popularPrompts, setPopularPrompts] = useState<Prompt[]>([]);
 
   useEffect(() => {
@@ -32,21 +34,21 @@ const Index = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="flex flex-col items-start max-w-2xl animate-slide-up">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Create, Share, and Discover 
-                <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent"> Powerful Prompts</span>
+                {t('home.hero.title')} 
+                <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent"> {t('home.hero.titleHighlight')}</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-xl">
-                Build a library of effective prompts, share them with the community, and discover prompts created by others.
+                {t('home.hero.description')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild size="lg" className="px-8 py-6 text-lg shadow-lg shadow-primary/20 animate-pulse">
                   <Link to={isAuthenticated ? "/create" : "/auth?mode=register"}>
-                    {isAuthenticated ? "Create Your First Prompt" : "Get Started"}
+                    {isAuthenticated ? t('home.hero.createFirst') : t('home.hero.getStarted')}
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg">
                   <Link to="/gallery">
-                    Explore Prompts
+                    {t('home.hero.explore')}
                   </Link>
                 </Button>
               </div>
@@ -85,7 +87,7 @@ const Index = () => {
       {/* Features Section */}
       <section className="py-16 bg-secondary/50">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Use PromptShare?</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{t('home.features.title')}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 hover-lift">
@@ -106,9 +108,9 @@ const Index = () => {
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Create Custom Prompts</h3>
+              <h3 className="text-xl font-semibold mb-3">{t('home.features.create.title')}</h3>
               <p className="text-gray-600">
-                Craft and save your perfect prompts for different use cases, keeping them organized and accessible.
+                {t('home.features.create.description')}
               </p>
             </div>
             
@@ -130,9 +132,9 @@ const Index = () => {
                   <path d="M10 3 7 6.1h5.3L15 3Z"></path>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Categorize & Organize</h3>
+              <h3 className="text-xl font-semibold mb-3">{t('home.features.organize.title')}</h3>
               <p className="text-gray-600">
-                Sort your prompts into categories, making it easy to find the right prompt when you need it.
+                {t('home.features.organize.description')}
               </p>
             </div>
             
@@ -155,9 +157,9 @@ const Index = () => {
                   <path d="M15 17v1a3 3 0 0 1-3 3v0a3 3 0 0 1-3-3v-1"></path>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Share & Discover</h3>
+              <h3 className="text-xl font-semibold mb-3">{t('home.features.share.title')}</h3>
               <p className="text-gray-600">
-                Share your best prompts with the community and discover effective prompts created by others.
+                {t('home.features.share.description')}
               </p>
             </div>
           </div>
@@ -168,12 +170,12 @@ const Index = () => {
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">Popular Prompts</h2>
+            <h2 className="text-2xl font-bold">{t('home.popular.title')}</h2>
             <Link 
               to="/gallery" 
               className="text-primary hover:underline flex items-center gap-1"
             >
-              View all
+              {t('home.popular.viewAll')}
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 width="16" 
@@ -202,13 +204,13 @@ const Index = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/5 to-blue-500/5">
         <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to get started?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">{t('home.cta.title')}</h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join our community of prompt engineers and enthusiasts today. Create, share, and discover powerful prompts.
+            {t('home.cta.description')}
           </p>
           <Button asChild size="lg" className="px-8 py-6 text-lg">
             <Link to={isAuthenticated ? "/create" : "/auth?mode=register"}>
-              {isAuthenticated ? "Create Your First Prompt" : "Sign Up for Free"}
+              {isAuthenticated ? t('home.hero.createFirst') : t('home.cta.signup')}
             </Link>
           </Button>
         </div>

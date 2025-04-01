@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { PromptProvider } from "./context/PromptContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import PromptGallery from "./pages/PromptGallery";
@@ -22,11 +23,12 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <PromptProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+      <LanguageProvider>
+        <PromptProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
@@ -41,9 +43,10 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </PromptProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </PromptProvider>
+      </LanguageProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePrompts,Prompt } from "@/context/PromptContext";
 import Navbar from "@/components/layout/Navbar";
+import { useLanguage } from "@/context/LanguageContext";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,6 +18,7 @@ const PromptDetails = () => {
   const { promptId } = useParams<{ promptId: string }>();
   const navigate = useNavigate();
   const { getPrompt, likePrompt, savePrompt } = usePrompts();
+  const { t } = useLanguage();
   const [prompt, setPrompt] = useState<Prompt>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -102,10 +104,10 @@ const PromptDetails = () => {
           throw new Error('Copy failed');
         }
       }
-      toast.success("Prompt copied to clipboard");
+      toast.success(t('promptDetails.copySuccess'));
     } catch (error) {
       console.error("Failed to copy prompt:", error);
-      toast.error("Failed to copy prompt to clipboard");
+      toast.error(t('promptDetails.copyError'));
     }
   };
 
@@ -166,7 +168,7 @@ const PromptDetails = () => {
             onClick={goBack}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('promptDetails.back')}
           </Button>
           
           {/* Prompt Header */}
@@ -209,7 +211,7 @@ const PromptDetails = () => {
               <Heart
                 className={`h-5 w-5 ${prompt.liked ? "fill-red-500 text-red-500" : ""}`}
               />
-              <span>{prompt.likes}</span>
+              <span>{t('promptDetails.actions.like')}</span>
             </Button>
             
             <Button
@@ -222,7 +224,7 @@ const PromptDetails = () => {
                   prompt.saved ? "fill-primary text-primary" : ""
                 }`}
               />
-              <span>{prompt.saved ? "Saved" : "Save"}</span>
+              <span>{prompt.saved ? t('promptDetails.actions.saved') : t('promptDetails.actions.save')}</span>
             </Button>
             
             <Button
@@ -231,13 +233,13 @@ const PromptDetails = () => {
               onClick={handleCopyPrompt}
             >
               <Copy className="h-5 w-5" />
-              <span>Copy</span>
+              <span>{t('promptDetails.actions.copy')}</span>
             </Button>
           </div>
           
           {/* Social Sharing */}
           <div className="border-t border-gray-200 pt-6 mt-6">
-            <h3 className="text-lg font-medium mb-4">Share this prompt</h3>
+            <h3 className="text-lg font-medium mb-4">{t('promptDetails.share.title')}</h3>
             <SocialShare 
               url={shareUrl} 
               title={prompt.title} 

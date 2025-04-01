@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
+import LanguageSwitch from "@/components/common/LanguageSwitch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -15,6 +17,7 @@ import {
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
@@ -49,13 +52,13 @@ const Navbar = () => {
             to="/"
             className={`nav-link ${isActive("/") ? "active-nav-link" : ""}`}
           >
-            Home
+            {t('nav.home')}
           </Link>
           <Link
             to="/gallery"
             className={`nav-link ${isActive("/gallery") ? "active-nav-link" : ""}`}
           >
-            Explore
+            {t('nav.gallery')}
           </Link>
           {isAuthenticated && (
             <>
@@ -63,19 +66,20 @@ const Navbar = () => {
                 to="/my-prompts"
                 className={`nav-link ${isActive("/my-prompts") ? "active-nav-link" : ""}`}
               >
-                My Prompts
+                {t('nav.myPrompts')}
               </Link>
               <Link
                 to="/favorites"
                 className={`nav-link ${isActive("/favorites") ? "active-nav-link" : ""}`}
               >
-                Favorites
+                {t('nav.favorites')}
               </Link>
             </>
           )}
         </nav>
 
         <div className="flex items-center gap-4">
+          <LanguageSwitch />
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

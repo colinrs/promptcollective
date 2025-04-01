@@ -7,10 +7,12 @@ import CategoryBadge from "@/components/common/CategoryBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePrompts,ListPromptResponse, ListCategoryResponse } from "@/context/PromptContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { Link } from "react-router-dom";
 
 const PromptGallery = () => {
   const {searchListPrompt, listCategory,isLoading } = usePrompts();
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<"newest" | "popular">("newest");
@@ -58,9 +60,9 @@ const PromptGallery = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Explore Prompts</h1>
+              <h1 className="text-3xl font-bold mb-2">{t('gallery.title')}</h1>
               <p className="text-gray-600">
-                Discover and save prompts created by the community
+                {t('gallery.description')}
               </p>
             </div>
             
@@ -75,7 +77,7 @@ const PromptGallery = () => {
               <div className="flex-1">
                 <Input
                   type="text"
-                  placeholder="Search prompts..."
+                  placeholder={t('gallery.search.placeholder')}
                   value={searchTerm}
                   onChange={handleSearchChange}
                   className="w-full"
@@ -84,14 +86,14 @@ const PromptGallery = () => {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">Sort by:</span>
+                  <span className="text-sm text-gray-600">{t('gallery.sort.label')}</span>
                   <select
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value as "newest" | "popular")}
                     className="rounded-md border border-gray-300 px-3 py-1.5 text-sm"
                   >
-                    <option value="newest">Newest</option>
-                    <option value="popular">Most Liked</option>
+                    <option value="newest">{t('gallery.sort.newest')}</option>
+                    <option value="popular">{t('gallery.sort.popular')}</option>
                   </select>
                 </div>
                 
@@ -100,7 +102,7 @@ const PromptGallery = () => {
                   size="sm"
                   onClick={() => setSelectedCategory(null)}
                 >
-                  All Categories
+                  {t('gallery.categories.all')}
                 </Button>
               </div>
             </div>
@@ -140,11 +142,11 @@ const PromptGallery = () => {
             </div>
           ) : (
             <div className="text-center py-16">
-              <h3 className="text-xl font-semibold mb-2">No prompts found</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('gallery.empty.title')}</h3>
               <p className="text-gray-600 mb-6">
                 {searchTerm || selectedCategory
-                  ? "Try adjusting your search filters"
-                  : "Be the first to create a prompt"}
+                  ? t('gallery.empty.searchDescription')
+                  : t('gallery.empty.description')}
               </p>
               <Button asChild>
                 <Link to="/create">Create Prompt</Link>
