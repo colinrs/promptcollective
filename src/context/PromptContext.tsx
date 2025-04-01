@@ -1,9 +1,9 @@
 
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext } from "react";
 import { toast } from "sonner";
 import { API_CONFIG } from "../config/api";
 import { httpClient } from "../lib/api";
-//import { mockPrompts, mockCategories } from "../utils/mockData";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Prompt {
   id: number;
@@ -31,8 +31,6 @@ export interface ListPromptResponse {
   total: number;
 }
 
-
-
 export interface Category {
   id: number;
   name: string;
@@ -53,12 +51,12 @@ interface PromptContextType {
   userPrompts: () => Promise<ListPromptResponse>;
   getPrompt: (id: string) => Promise<Prompt>;
   listPrompt: () => Promise<ListPromptResponse>;
-  searchListPrompt: (title: string,content: string, categoryId:number, sort:string) => Promise<ListPromptResponse>;
+  searchListPrompt: (title: string, content: string, categoryId: number, sort: string) => Promise<ListPromptResponse>;
   createPrompt: (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy" | "category" | "categoryColor">) => Promise<void>;
   updatePrompt: (prompt: Partial<Prompt>) => Promise<void>;
   deletePrompt: (id: number) => Promise<void>;
-  likePrompt: (id: number,action: string) => Promise<void>;
-  savePrompt: (id: number,action: string) => Promise<void>;
+  likePrompt: (id: number, action: string) => Promise<void>;
+  savePrompt: (id: number, action: string) => Promise<void>;
   createCategory: (name: string) => Promise<void>;
   listCategory: () => Promise<ListCategoryResponse>;
   getPromptsByCategory: (categoryId: string) => Promise<ListPromptResponse>;
@@ -67,59 +65,31 @@ interface PromptContextType {
 const PromptContext = createContext<PromptContextType | undefined>(undefined);
 
 export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const API_BASE_URL = API_CONFIG.BASE_URL;
+  // Fetch functions with explicit return types to prevent unnecessary re-fetching
+  const getPrompt = async (id: string): Promise<Prompt> => {
+    try {
+      return await httpClient.get<Prompt>(`${API_CONFIG.GET_PROMPT_BY_ID}?promptId=${id}`);
+    } catch (error) {
+      console.error("Get prompt error:", error);
+      throw error;
+    }
+  };
 
-  useEffect(() => {
-    // Load initial data
-    const fetchData = async () => {
-      try {
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Fetch data error:", error);
-        toast.error("Failed to load data");
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [API_BASE_URL]);
-
-
-  const listPrompt = async () => {
-    setIsLoading(true);
+  const listPrompt = async (): Promise<ListPromptResponse> => {
     try {
       const response = await httpClient.get<ListPromptResponse>(API_CONFIG.GET_PROMPTS);
-      toast.success("Prompt get successfully");
       return response;
     } catch (error) {
-      toast.error("Failed get prompt");
       console.error("List prompts error:", error);
-      return null;
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
   };
 
-  const getPrompt = async (id: string) => {
-    setIsLoading(true);
+  const searchListPrompt = async (title: string, content: string, categoryId: number, sort: string): Promise<ListPromptResponse> => {
     try {
-      const resp =  await httpClient.get<Prompt>(`${API_CONFIG.GET_PROMPT_BY_ID}?promptId=${id}`);
-      toast.success("Prompt created successfully");
-      return resp;
-    } catch (error) {
-      toast.error("Failed to create prompt");
-      console.error("Create prompt error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const searchListPrompt = async (title: string, content: string, categoryId: number, sort: string) => {
-    setIsLoading(true);
-    try {
-      // 构建查询参数，只有当参数有值时才添加
+      // Build query params, only add when values exist
       const params = new URLSearchParams();
       if (title) params.append('title', title);
       if (content) params.append('content', content);
@@ -129,18 +99,14 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const queryString = params.toString();
       const url = queryString ? `${API_CONFIG.SEARCH_PROMPTS}?${queryString}` : API_CONFIG.SEARCH_PROMPTS;
       
-      const resp = await httpClient.get<ListPromptResponse>(url);
-      toast.success("Prompts retrieved successfully");
-      return resp;
+      return await httpClient.get<ListPromptResponse>(url);
     } catch (error) {
-      toast.error("Failed to search prompts");
       console.error("Search prompts error:", error);
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
   };
 
-  const createPrompt = async (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy">) => {
+  const createPrompt = async (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy" | "category" | "categoryColor">): Promise<void> => {
     setIsLoading(true);
     try {
       await httpClient.post<Prompt>(API_CONFIG.CREATE_PROMPT, prompt);
@@ -148,12 +114,13 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (error) {
       toast.error("Failed to create prompt");
       console.error("Create prompt error:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const updatePrompt = async (promptUpdate: Partial<Prompt>) => {
+  const updatePrompt = async (promptUpdate: Partial<Prompt>): Promise<void> => {
     setIsLoading(true);
     try {
       await httpClient.put<Prompt>(API_CONFIG.UPDATE_PROMPT, promptUpdate);      
@@ -161,12 +128,13 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (error) {
       toast.error("Failed to update prompt");
       console.error("Update prompt error:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const deletePrompt = async (id: number) => {
+  const deletePrompt = async (id: number): Promise<void> => {
     setIsLoading(true);
     try {
       await httpClient.delete(`${API_CONFIG.DELETE_PROMPT}?promptId=${id}`);
@@ -174,63 +142,60 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (error) {
       toast.error("Failed to delete prompt");
       console.error("Delete prompt error:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const likePrompt = async (id: number,action: string) => {
+  const likePrompt = async (id: number, action: string): Promise<void> => {
     try {
-      await httpClient.post<Prompt>(`${API_CONFIG.LIKE_PROMPT}`,{"promptId":id, "action":action});
+      await httpClient.post<Prompt>(`${API_CONFIG.LIKE_PROMPT}`, {"promptId": id, "action": action});
     } catch (error) {
       toast.error("Failed to update like status");
       console.error("Like prompt error:", error);
+      throw error;
     }
   };
 
-  const savePrompt = async (id: number,action: string) => {
+  const savePrompt = async (id: number, action: string): Promise<void> => {
     try {
-      await httpClient.post<Prompt>(`${API_CONFIG.SAVE_PROMPTS}`,{"promptId":id, "action":action});
+      await httpClient.post<Prompt>(`${API_CONFIG.SAVE_PROMPTS}`, {"promptId": id, "action": action});
     } catch (error) {
       toast.error("Failed to update saved status");
       console.error("Save prompt error:", error);
+      throw error;
     }
   };
 
-  const userSavePrompts = async () => {
+  const userSavePrompts = async (): Promise<ListPromptResponse> => {
     try {
-      const resp =  await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_SAVE}`);
-      return resp;
+      return await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_SAVE}`);
     } catch (error) {
-      toast.error("Failed to update saved status");
-      console.error("Save prompt error:", error);
-      return null;
+      console.error("User saved prompts error:", error);
+      throw error;
     }
   };
 
-  const userLikePrompts = async () => {
+  const userLikePrompts = async (): Promise<ListPromptResponse> => {
     try {
-      const resp =  await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_LIKE}`);
-      return resp;
+      return await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_LIKE}`);
     } catch (error) {
-      toast.error("Failed to update saved status");
-      console.error("Save prompt error:", error);
-      return null;
+      console.error("User liked prompts error:", error);
+      throw error;
     }
   };
 
-  const userPrompts = async () => {
+  const userPrompts = async (): Promise<ListPromptResponse> => {
     try {
-      const resp =  await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_LIST}`);
-      return resp;
+      return await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_LIST}`);
     } catch (error) {
-      toast.error("Failed to update saved status");
-      console.error("Save prompt error:", error);
-      return null;
+      console.error("User prompts error:", error);
+      throw error;
     }
   };
 
-  const createCategory = async (name: string) => {
+  const createCategory = async (name: string): Promise<void> => {
     setIsLoading(true);
     try {
       await httpClient.post<Category>(`${API_CONFIG.CREATE_CATEGORY}`, { name });
@@ -238,33 +203,27 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } catch (error) {
       toast.error("Failed to create category");
       console.error("Create category error:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const listCategory = async () => {
-    setIsLoading(true);
+  const listCategory = async (): Promise<ListCategoryResponse> => {
     try {
-      const resp =  await httpClient.get<ListCategoryResponse>(`${API_CONFIG.LIST_CATEGORY}`);
-      toast.success("Prompt created successfully");
-      return resp;
+      return await httpClient.get<ListCategoryResponse>(`${API_CONFIG.LIST_CATEGORY}`);
     } catch (error) {
-      toast.error("Failed to create prompt");
-      console.error("Create prompt error:", error);
-      return null;
-    } finally {
-      setIsLoading(false);
+      console.error("List categories error:", error);
+      throw error;
     }
   };
 
-  const getPromptsByCategory = async (categoryId: string) => {
+  const getPromptsByCategory = async (categoryId: string): Promise<ListPromptResponse> => {
     try {
-      return await httpClient.get<ListPromptResponse>(`${API_CONFIG.CREATE_CATEGORY}?category_id=${categoryId}`);
+      return await httpClient.get<ListPromptResponse>(`${API_CONFIG.GET_PROMPT_BY_CATEGORY_ID}?category_id=${categoryId}`);
     } catch (error) {
       console.error("Get prompts by category error:", error);
-      toast.error("Failed to load prompts");
-      return null;
+      throw error;
     }
   };
 

@@ -1,7 +1,7 @@
+
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import { API_CONFIG } from '../config/api';
 import { toast } from 'sonner';
-import { debug } from 'console';
 
 export interface LoginResponse {
   userId: string;
@@ -24,6 +24,7 @@ const RETRY_DELAY = 1000;
 class HttpClient {
   private instance: AxiosInstance;
   private retryCount: number = 0;
+  private pendingRequests: Map<string, Promise<any>> = new Map();
 
   constructor() {
     this.instance = axios.create({
@@ -38,7 +39,7 @@ class HttpClient {
   }
 
   private setupInterceptors() {
-    // 请求拦截器
+    // Request interceptor
     this.instance.interceptors.request.use(
       (config) => {
         const userStr = localStorage.getItem('user');
@@ -46,11 +47,11 @@ class HttpClient {
           try {
             const user = JSON.parse(userStr);
             if (user?.token) {
-            config.headers.Authorization = `Bearer ${user.token}`;
+              config.headers.Authorization = `Bearer ${user.token}`;
+            }
+          } catch (error) {
+            console.error('Error parsing user data:', error);
           }
-        } catch (error) {
-          console.error('Error parsing user data:', error);
-        }
         }
         return config;
       },
@@ -59,7 +60,7 @@ class HttpClient {
       }
     );
 
-    // 响应拦截器
+    // Response interceptor
     this.instance.interceptors.response.use(
       <T>(response: AxiosResponse<ApiResponse<T>>) => {
         const { data } = response;
@@ -81,7 +82,7 @@ class HttpClient {
       },
       async <T>(error: AxiosError<ApiResponse<T>>) => {
         if (error.response?.status === 401) {
-          // Token 过期处理
+          // Token expiration handling
           localStorage.removeItem('user');
           window.location.href = '/auth';
           return Promise.reject(new Error('登录已过期，请重新登录'));
@@ -110,8 +111,24 @@ class HttpClient {
     );
   }
 
+  // Get request with deduplication
   public async get<T>(url: string, params?: object): Promise<T> {
-    return this.instance.get<ApiResponse<T>, T>(url, { params });
+    const key = `${url}:${JSON.stringify(params || {})}`;
+    
+    // Check if there's already a pending request for this URL with the same params
+    if (this.pendingRequests.has(key)) {
+      return this.pendingRequests.get(key);
+    }
+    
+    // Create new request and store it
+    const request = this.instance.get<ApiResponse<T>, T>(url, { params })
+      .finally(() => {
+        // Remove from pending requests when done
+        this.pendingRequests.delete(key);
+      });
+    
+    this.pendingRequests.set(key, request);
+    return request;
   }
 
   public async post<T>(url: string, data?: object): Promise<T> {
