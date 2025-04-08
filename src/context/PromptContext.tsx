@@ -51,7 +51,7 @@ interface PromptContextType {
   userPrompts: () => Promise<ListPromptResponse>;
   getPrompt: (id: string) => Promise<Prompt>;
   listPrompt: () => Promise<ListPromptResponse>;
-  searchListPrompt: (title: string, content: string, categoryId: number, sort: string) => Promise<ListPromptResponse>;
+  searchListPrompt: (title: string, content: string, categoryId: number, sort: string, page?: number, pageSize?: number) => Promise<ListPromptResponse>;
   createPrompt: (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy" | "category" | "categoryColor">) => Promise<void>;
   updatePrompt: (prompt: Partial<Prompt>) => Promise<void>;
   deletePrompt: (id: number) => Promise<void>;

@@ -9,6 +9,14 @@ import { Input } from "@/components/ui/input";
 import { usePrompts,ListPromptResponse, ListCategoryResponse } from "@/context/PromptContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { Link } from "react-router-dom";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const PromptGallery = () => {
   const {searchListPrompt, listCategory,isLoading } = usePrompts();
@@ -18,13 +26,15 @@ const PromptGallery = () => {
   const [sortOption, setSortOption] = useState<"newest" | "popular">("newest");
   const [searchPrompts, setSearchPrompts] = useState<ListPromptResponse>(null);
   const [listCategories, setListCategories] = useState<ListCategoryResponse>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   useEffect(() => {
     const fetchPrompts = async () => {
       try {
         const response = await searchListPrompt(
           searchTerm.toLowerCase(), searchTerm.toLowerCase(),
-          selectedCategory, sortOption);
+          selectedCategory, sortOption, currentPage, pageSize);
         setSearchPrompts(response);
       } catch (error) {
         console.error("Error fetching prompts:", error);
@@ -135,10 +145,41 @@ const PromptGallery = () => {
               </div>
             </div>
           ) : searchPrompts?.list.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {searchPrompts?.list.map(prompt => (
-                <PromptCard key={prompt.id} prompt={prompt} />
-              ))}
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {searchPrompts?.list.map(prompt => (
+                  <PromptCard key={prompt.id} prompt={prompt} />
+                ))}
+              </div>
+              
+              <Pagination className="justify-center">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      aria-disabled={currentPage === 1}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                  {Array.from({length: Math.ceil(searchPrompts.total / pageSize)}, (_, i) => i + 1).map(page => (
+                    <PaginationItem key={page}>
+                      <PaginationLink 
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(prev => Math.min(Math.ceil(searchPrompts.total / pageSize), prev + 1))}
+                      aria-disabled={currentPage === Math.ceil(searchPrompts.total / pageSize)}
+                      className={currentPage === Math.ceil(searchPrompts.total / pageSize) ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           ) : (
             <div className="text-center py-16">

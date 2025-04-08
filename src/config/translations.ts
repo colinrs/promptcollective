@@ -19,6 +19,17 @@ type TranslationKeys = {
   'home.hero.createFirst': string;
   'home.hero.explore': string;
   'home.features.title': string;
+  'home.features.create.title': string;
+  'home.features.create.description': string;
+  'home.features.organize.title': string;
+  'home.features.organize.description': string;
+  'home.features.share.title': string;
+  'home.features.share.description': string;
+  'home.popular.title': string;
+  'home.popular.viewAll': string;
+  'home.cta.title': string;
+  'home.cta.description': string;
+  'home.cta.signup': string;
 
   // 认证页面
   'auth.login.title': string;
@@ -129,6 +140,18 @@ export const translations: Record<Language, TranslationKeys> = {
     'home.hero.createFirst': 'Create First Prompt',
     'home.hero.explore': 'Explore Gallery',
     'home.features.title': 'Why Choose Us',
+    'home.features.create.title': 'Create',
+    'home.features.create.description': 'Create your own prompts to share with the community',
+    'home.features.organize.title': 'Organize',
+    'home.features.organize.description': 'Organize your prompts into categories for easy access',
+    'home.features.share.title': 'Share',
+    'home.features.share.description': 'Share your prompts with the world',
+    'home.popular.title': 'Popular Prompts',
+    'home.popular.viewAll': 'View All',
+    'home.cta.title': 'Start Creating',
+    'home.cta.description': 'Create your first prompt to get started',
+    'home.cta.signup': 'Sign Up Now',
+
 
     // 认证页面
     'auth.login.title': 'Welcome Back',
@@ -237,6 +260,17 @@ export const translations: Record<Language, TranslationKeys> = {
     'home.hero.createFirst': '创建第一个提示词',
     'home.hero.explore': '浏览画廊',
     'home.features.title': '为什么选择我们',
+    'home.features.create.title': '创建',
+    'home.features.create.description': '创建您自己的提示词，与社区分享',
+    'home.features.organize.title': '组织',
+    'home.features.organize.description': '将提示词组织到分类中，方便访问',
+    'home.features.share.title': '分享',
+    'home.features.share.description': '与世界分享您的提示词',
+    'home.popular.title': '热门提示',
+    'home.popular.viewAll': '查看全部',
+    'home.cta.title': '开始创建',
+    'home.cta.description': '创建您的第一个提示词以开始',
+    'home.cta.signup': '立即注册',
 
     // 认证页面
     'auth.login.title': '欢迎回来',

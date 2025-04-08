@@ -141,7 +141,7 @@ const [categories, setCategories] = useState<Category[]>([]);
     try {
       if (isEditMode && promptId) {
         await updatePrompt({
-          id: promptId,
+          id: Number(promptId),
           title: formData.title,
           content: formData.content,
           category: formData.category,
