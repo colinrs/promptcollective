@@ -50,7 +50,7 @@ interface PromptContextType {
   userLikePrompts: () => Promise<ListPromptResponse>;
   userPrompts: () => Promise<ListPromptResponse>;
   getPrompt: (id: string) => Promise<Prompt>;
-  listPrompt: () => Promise<ListPromptResponse>;
+  listPrompt: (page?: number, pageSize?: number) => Promise<ListPromptResponse>;
   searchListPrompt: (title: string, content: string, categoryId: number, sort: string, page?: number, pageSize?: number) => Promise<ListPromptResponse>;
   createPrompt: (prompt: Omit<Prompt, "id" | "createdAt" | "updatedAt" | "likes" | "createdBy" | "category" | "categoryColor">) => Promise<void>;
   updatePrompt: (prompt: Partial<Prompt>) => Promise<void>;
@@ -77,9 +77,14 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  const listPrompt = async (): Promise<ListPromptResponse> => {
+  const listPrompt = async (page: number = 1, pageSize: number = 10): Promise<ListPromptResponse> => {
     try {
-      const response = await httpClient.get<ListPromptResponse>(API_CONFIG.GET_PROMPTS);
+      const params = new URLSearchParams();
+      params.append('page', page.toString());
+      params.append('pageSize', pageSize.toString());
+      const queryString = params.toString();
+      const url = `${API_CONFIG.GET_PROMPTS}?${queryString}`;
+      const response = await httpClient.get<ListPromptResponse>(url);
       return response;
     } catch (error) {
       console.error("List prompts error:", error);
@@ -87,14 +92,17 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  const searchListPrompt = async (title: string, content: string, categoryId: number, sort: string): Promise<ListPromptResponse> => {
+  const searchListPrompt = async (title: string, content: string, categoryId: number, sort: string, 
+    page: number = 1, pageSize: number = 20): Promise<ListPromptResponse> => {
     try {
       // Build query params, only add when values exist
       const params = new URLSearchParams();
       if (title) params.append('title', title);
       if (content) params.append('content', content);
-      if (categoryId) params.append('category_id', categoryId.toString());
+      if (categoryId) params.append('categoryId', categoryId.toString());
       if (sort) params.append('sort', sort);
+      if (page !== undefined) params.append('page', page.toString());
+      if (pageSize !== undefined) params.append('pageSize', pageSize.toString());
       
       const queryString = params.toString();
       const url = queryString ? `${API_CONFIG.SEARCH_PROMPTS}?${queryString}` : API_CONFIG.SEARCH_PROMPTS;

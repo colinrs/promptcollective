@@ -3,9 +3,9 @@
 // API configuration
 const getBaseUrl = () => {
   if (import.meta.env.MODE === 'development') {
-    return 'http://192.168.0.109:8080/api';
+    return import.meta.env.VITE_DEV_API_URL;
   }
-  return 'https://api.promptcollective.com/api';
+  return import.meta.env.VITE_PROD_API_URL;
 };
 
 export const API_CONFIG = {
@@ -15,6 +15,9 @@ export const API_CONFIG = {
   USER_LOGOUT: '/v1/user/logout',
   USER_UPDATE: '/v1/user/update',
   USER_CHANGE_PASSWORD: '/v1/user/change_password',
+  USER_SEND_VERIFICATION_CODE: '/v1/user/send_verification_code',
+  USER_VERIFICATION_CODE: '/v1/user/verification_code',
+  USER_RESET_PASSWORD: '/v1/user/reset_password',
   USER_REFRESH_TOKEN: '/v1/user/refresh_token',
   USER_REGISTER: '/v1/user/register',
 

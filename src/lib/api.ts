@@ -24,7 +24,7 @@ const RETRY_DELAY = 1000;
 class HttpClient {
   private instance: AxiosInstance;
   private retryCount: number = 0;
-  private pendingRequests: Map<string, Promise<any>> = new Map();
+  private pendingRequests: Map<string, Promise<unknown>> = new Map();
 
   constructor() {
     this.instance = axios.create({
@@ -117,7 +117,7 @@ class HttpClient {
     
     // Check if there's already a pending request for this URL with the same params
     if (this.pendingRequests.has(key)) {
-      return this.pendingRequests.get(key);
+      return this.pendingRequests.get(key) as Promise<T>;
     }
     
     // Create new request and store it

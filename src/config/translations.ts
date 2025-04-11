@@ -1,6 +1,15 @@
 export type Language = 'en' | 'zh';
 
 type TranslationKeys = {
+  // 邮箱验证页面
+  'emailVerification.title': string;
+  'emailVerification.description': string;
+  'emailVerification.checkEmail': string;
+  'emailVerification.spamNotice': string;
+  'emailVerification.resend': string;
+  'emailVerification.resending': string;
+  'emailVerification.backToLogin': string;
+
   // 导航栏
   'nav.home': string;
   'nav.gallery': string;
@@ -10,6 +19,24 @@ type TranslationKeys = {
   'nav.login': string;
   'nav.register': string;
   'nav.logout': string;
+
+  // 忘记密码页面
+  'forgotPassword.title': string;
+  'forgotPassword.description': string;
+  'forgotPassword.email': string;
+  'forgotPassword.verificationCode': string;
+  'forgotPassword.newPassword': string;
+  'forgotPassword.confirmPassword': string;
+  'forgotPassword.sendCode': string;
+  'forgotPassword.resetPassword': string;
+  'forgotPassword.backToLogin': string;
+  'forgotPassword.emailRequired': string;
+  'forgotPassword.codeRequired': string;
+  'forgotPassword.newPasswordRequired': string;
+  'forgotPassword.confirmPasswordRequired': string;
+  'forgotPassword.passwordMismatch': string;
+  'forgotPassword.codeSent': string;
+  'forgotPassword.resetSuccess': string;
 
   // 首页
   'home.hero.title': string;
@@ -48,6 +75,7 @@ type TranslationKeys = {
   'auth.submit.register': string;
   'auth.switchMode.login': string;
   'auth.switchMode.register': string;
+  'auth.forgotPassword': string;
 
   // 创建提示词页面
   'create.title': string;
@@ -122,6 +150,33 @@ type TranslationKeys = {
 
 export const translations: Record<Language, TranslationKeys> = {
   en: {
+    // 邮箱验证页面
+    'emailVerification.title': 'Email Verification Required',
+    'emailVerification.description': 'Please verify your email address to complete registration',
+    'emailVerification.checkEmail': 'We have sent a verification link to your email address. Please check your inbox and click the link to verify your account.',
+    'emailVerification.spamNotice': 'If you don\'t see the email, please check your spam folder.',
+    'emailVerification.resend': 'Resend Verification Email',
+    'emailVerification.resending': 'Resending',
+    'emailVerification.backToLogin': 'Back to Login',
+
+    // 忘记密码页面
+    'forgotPassword.title': 'Reset Password',
+    'forgotPassword.description': 'Enter your email address and we will send you a verification code',
+    'forgotPassword.email': 'Email',
+    'forgotPassword.verificationCode': 'Verification Code',
+    'forgotPassword.newPassword': 'New Password',
+    'forgotPassword.confirmPassword': 'Confirm Password',
+    'forgotPassword.sendCode': 'Send Code',
+    'forgotPassword.resetPassword': 'Reset Password',
+    'forgotPassword.backToLogin': 'Back to Login',
+    'forgotPassword.emailRequired': 'Email is required',
+    'forgotPassword.codeRequired': 'Verification code is required',
+    'forgotPassword.newPasswordRequired': 'New password is required',
+    'forgotPassword.confirmPasswordRequired': 'Please confirm your password',
+    'forgotPassword.passwordMismatch': 'Passwords do not match',
+    'forgotPassword.codeSent': 'Verification code sent',
+    'forgotPassword.resetSuccess': 'Password reset successful',
+
     // 导航栏
     'nav.home': 'Home',
     'nav.gallery': 'Gallery',
@@ -170,6 +225,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'auth.submit.register': 'Sign Up',
     'auth.switchMode.login': 'Already have an account? Sign in',
     'auth.switchMode.register': 'Don\'t have an account? Sign up',
+    'auth.forgotPassword': 'Forgot Password?',
 
     // 创建提示词页面
     'create.title': 'Create New Prompt',
@@ -242,6 +298,33 @@ export const translations: Record<Language, TranslationKeys> = {
     'gallery.empty.searchDescription': 'Try adjusting your search filters'
   },
   zh: {
+    // 邮箱验证页面
+    'emailVerification.title': '需要验证邮箱',
+    'emailVerification.description': '请验证您的邮箱地址以完成注册',
+    'emailVerification.checkEmail': '我们已向您的邮箱发送了验证链接，请查收并点击链接验证您的账号。',
+    'emailVerification.spamNotice': '如果您没有收到邮件，请检查垃圾邮件文件夹。',
+    'emailVerification.resend': '重新发送验证邮件',
+    'emailVerification.resending': '发送中',
+    'emailVerification.backToLogin': '返回登录',
+
+    // 忘记密码页面
+    'forgotPassword.title': '重置密码',
+    'forgotPassword.description': '请输入您的邮箱地址，我们将向您发送验证码',
+    'forgotPassword.email': '邮箱',
+    'forgotPassword.verificationCode': '验证码',
+    'forgotPassword.newPassword': '新密码',
+    'forgotPassword.confirmPassword': '确认密码',
+    'forgotPassword.sendCode': '发送验证码',
+    'forgotPassword.resetPassword': '重置密码',
+    'forgotPassword.backToLogin': '返回登录',
+    'forgotPassword.emailRequired': '请输入邮箱',
+    'forgotPassword.codeRequired': '请输入验证码',
+    'forgotPassword.newPasswordRequired': '请输入新密码',
+    'forgotPassword.confirmPasswordRequired': '请确认密码',
+    'forgotPassword.passwordMismatch': '两次输入的密码不一致',
+    'forgotPassword.codeSent': '验证码已发送',
+    'forgotPassword.resetSuccess': '密码重置成功',
+
     // 导航栏
     'nav.home': '首页',
     'nav.gallery': '画廊',
@@ -289,6 +372,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'auth.submit.register': '注册',
     'auth.switchMode.login': '已有帐户？立即登录',
     'auth.switchMode.register': '没有帐户？立即注册',
+    'auth.forgotPassword': '忘记密码？',
 
     // 创建提示词页面
     'create.title': '创建新提示词',

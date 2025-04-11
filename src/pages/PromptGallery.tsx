@@ -50,7 +50,11 @@ const PromptGallery = () => {
     }
     fetchPrompts();
     fetchCategories();
-  }, [searchListPrompt, listCategory,searchTerm, selectedCategory, sortOption]);
+  }, [
+    searchListPrompt, 
+    listCategory,
+    searchTerm, selectedCategory, sortOption,
+    currentPage, pageSize]);
 
   const handleCategorySelect = (categoryId: number) => {
     setSelectedCategory(prevCategory => 

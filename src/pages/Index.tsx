@@ -10,19 +10,20 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 
 const Index = () => {
-  const { listPrompt } = usePrompts();
+  const { searchListPrompt } = usePrompts();
   const { isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const [popularPrompts, setPopularPrompts] = useState<Prompt[]>([]);
 
   useEffect(() => {
     const fetchPrompts = async () => {
-      const listPromptResponse = await listPrompt();
+      const listPromptResponse = await searchListPrompt(null, null,
+        null, "popular", 1, 6);
       const prompts = listPromptResponse.list;
       setPopularPrompts(prompts);
     };
     fetchPrompts();
-  }, [listPrompt]);
+  }, [searchListPrompt]);
 
   return (
     <div className="min-h-screen flex flex-col">

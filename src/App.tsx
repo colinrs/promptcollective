@@ -17,6 +17,8 @@ import PromptDetails from "./pages/PromptDetails";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import ForgotPassword from "./pages/ForgotPassword";
+import EmailVerification from "./pages/EmailVerification";
 
 // Create a client with proper caching configuration
 const queryClient = new QueryClient({
@@ -50,6 +52,8 @@ const App = () => (
               <Route path="/prompt/:promptId" element={<PromptDetails />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/email-verification" element={<EmailVerification />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

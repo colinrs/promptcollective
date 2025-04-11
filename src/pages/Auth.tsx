@@ -95,6 +95,9 @@ const Auth = () => {
       await login(formData.email, formData.password);
     } else {
       await register(formData.name, formData.email, formData.password);
+      // 注册成功后跳转到邮箱验证页面，并传递邮箱信息
+      navigate('/email-verification', { state: { email: formData.email } });
+      return; // 防止执行后续的重定向逻辑
     }
   };
 
@@ -170,7 +173,7 @@ const Auth = () => {
                         to="/forgot-password"
                         className="text-xs text-primary hover:underline"
                       >
-                        Forgot password?
+                        {t('auth.forgotPassword')}
                       </Link>
                     )}
                   </div>
