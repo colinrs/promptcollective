@@ -23,6 +23,7 @@ interface AuthContextType {
   verificationCode: (code: string, email: string) => Promise<void>;
   resetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
+  updateUserProfile: (data: { name: string; avatar: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -157,7 +158,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
     }
   };
+
   
+
+  
+  const updateUserProfile = async (data: { name: string; avatar: string }) => {
+    setIsLoading(true);
+    try {
+      await httpClient.put(API_CONFIG.USER_UPDATE, data);
+      if (user) {
+        const updatedUser = {
+          ...user,
+          name: data.name,
+          avatar: data.avatar
+        };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+      toast.success(t('toast.auth.profileUpdateSuccess'));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('toast.auth.profileUpdateFailed'));
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -171,6 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         verificationCode,
         resetPassword,
         forgotPassword,
+        updateUserProfile,
       }}
     >
       {children}

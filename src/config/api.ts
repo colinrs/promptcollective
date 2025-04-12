@@ -13,7 +13,7 @@ export const API_CONFIG = {
   // User API
   USER_LOGIN: '/v1/user/login',
   USER_LOGOUT: '/v1/user/logout',
-  USER_UPDATE: '/v1/user/update',
+  USER_UPDATE: '/v1/user/update_profile',
   USER_CHANGE_PASSWORD: '/v1/user/change_password',
   USER_SEND_VERIFICATION_CODE: '/v1/user/send_verification_code',
   USER_VERIFICATION_CODE: '/v1/user/verification_code',

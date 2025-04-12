@@ -12,7 +12,7 @@ export interface LoginResponse {
   expireAt: number;
 }
 
-interface ApiResponse<T> {
+export interface ApiResponse<T> {
   code: number;
   msg: string;
   data: T;
@@ -66,18 +66,15 @@ class HttpClient {
         const { data } = response;
         const errorHandlers = new Map([
           [20007, { redirect: '/auth?mode=login', defaultMsg: '用户已存在，请登录' }],
-          [20008, { redirect: '/auth?mode=register', defaultMsg: '用户不存在，请注册' }]
+          [20008, { redirect: '/auth?mode=register', defaultMsg: '用户不存在，请注册' }],
+          [20017, { redirect: '', defaultMsg: '包含敏感词' }],
         ]);
-
         const handler = errorHandlers.get(data.code);
-        if (handler) {
+  
           if (window.confirm(data.msg || handler.defaultMsg)) {
             window.location.href = handler.redirect;
           }
           throw new Error(data.msg || handler.defaultMsg);
-        } else if (data.code !== 0) {
-          throw new Error(data.msg || '请求失败');
-        }
         return data.data;
       },
       async <T>(error: AxiosError<ApiResponse<T>>) => {

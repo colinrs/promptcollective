@@ -26,6 +26,7 @@ type TranslationKeys = {
   'nav.login': string;
   'nav.register': string;
   'nav.logout': string;
+  'nav.account': string;
 
   // 忘记密码页面
   'forgotPassword.title': string;
@@ -83,6 +84,15 @@ type TranslationKeys = {
   'auth.switchMode.login': string;
   'auth.switchMode.register': string;
   'auth.forgotPassword': string;
+
+  'account.actions.edit': string;
+  'account.actions.save': string;
+  'account.actions.cancel': string;
+  'account.form.email': string;
+  'account.form.username': string;
+  'account.form.avatarUrl': string;
+  'account.description': string;
+  'account.title': string;
 
   // 创建提示词页面
   'create.title': string;
@@ -153,6 +163,7 @@ type TranslationKeys = {
   'gallery.empty.title': string;
   'gallery.empty.description': string;
   'gallery.empty.searchDescription': string;
+  
 
 
   // toast
@@ -175,6 +186,11 @@ type TranslationKeys = {
   'toast.prompt.deleteFailed': string;
   'toast.prompt.likeUpdateFailed': string;
   'toast.prompt.saveUpdateFailed': string;
+  'toast.auth.profileUpdateSuccess': string;
+  'toast.auth.profileUpdateFailed': string;
+  'toast.prompt.categoryCreateSuccess': string;
+  'toast.prompt.categoryCreateFailed': string;
+  'toast.prompt.categorySensitiveWord': string;
 };
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -216,12 +232,13 @@ export const translations: Record<Language, TranslationKeys> = {
     // 导航栏
     'nav.home': 'Home',
     'nav.gallery': 'Gallery',
-    'nav.create': 'Create',
+    'nav.create': 'Create Prompt',
     'nav.myPrompts': 'My Prompts',
     'nav.favorites': 'Favorites',
     'nav.login': 'Login',
     'nav.register': 'Register',
     'nav.logout': 'Logout',
+    'nav.account': 'Account',
 
     // 首页
     'home.hero.title': 'Discover and Share',
@@ -263,6 +280,14 @@ export const translations: Record<Language, TranslationKeys> = {
     'auth.switchMode.register': 'Don\'t have an account? Sign up',
     'auth.forgotPassword': 'Forgot Password?',
 
+    'account.actions.edit': 'Edit',
+    'account.actions.save': 'Save',
+    'account.actions.cancel': 'Cancel',
+    'account.form.email': 'Email',
+    'account.form.username': 'Name',
+    'account.form.avatarUrl': 'Avatar URL',
+    'account.description': 'Manage your profile information and settings',
+    'account.title': 'Account',
     // 创建提示词页面
     'create.title': 'Create New Prompt',
     'create.editTitle': 'Edit Prompt',
@@ -352,6 +377,11 @@ export const translations: Record<Language, TranslationKeys> = {
     'toast.prompt.deleteFailed': 'Failed to delete prompt',
     'toast.prompt.likeUpdateFailed': 'Failed to update like status',
     'toast.prompt.saveUpdateFailed': 'Failed to update saved status',
+    'toast.auth.profileUpdateSuccess': 'Profile updated successfully',
+    'toast.auth.profileUpdateFailed': 'Failed to update profile',
+    'toast.prompt.categoryCreateSuccess': 'Category created successfully',
+    'toast.prompt.categoryCreateFailed': 'Failed to create category',
+    'toast.prompt.categorySensitiveWord': 'Category name contains sensitive words'
   },
   zh: {
     // 邮箱验证页面
@@ -398,6 +428,7 @@ export const translations: Record<Language, TranslationKeys> = {
     'nav.login': '登录',
     'nav.register': '注册',
     'nav.logout': '退出',
+    'nav.account': '账号',
 
     // 首页
     'home.hero.title': '发现和分享',
@@ -419,6 +450,14 @@ export const translations: Record<Language, TranslationKeys> = {
     'home.cta.description': '创建您的第一个提示词以开始',
     'home.cta.signup': '立即注册',
 
+    'account.actions.edit': '编辑',
+    'account.actions.save': '保存',
+    'account.actions.cancel': '取消',
+    'account.form.email': '邮箱',
+    'account.form.username': '姓名',
+    'account.form.avatarUrl': '头像URL',
+    'account.description': '管理您的个人信息和设置',
+    'account.title': '账号',
     // 认证页面
     'auth.login.title': '欢迎回来',
     'auth.login.description': '输入您的凭据以访问您的帐户',
@@ -509,24 +548,29 @@ export const translations: Record<Language, TranslationKeys> = {
     'gallery.empty.searchDescription': '尝试调整搜索条件',
 
         // Toast消息
-        'toast.auth.loginSuccess': '登录成功',
-        'toast.auth.loginFailed': '登录失败，请重试',
-        'toast.auth.registerSuccess': '账号创建成功',
-        'toast.auth.registerFailed': '注册失败，请重试',
-        'toast.auth.logoutSuccess': '已成功退出登录',
-        'toast.auth.verificationCodeSent': '验证码已发送到您的邮箱',
-        'toast.auth.verificationCodeSendFailed': '发送验证码失败，请重试',
-        'toast.auth.verificationSuccess': '验证成功',
-        'toast.auth.verificationFailed': '验证失败，请重试',
-        'toast.auth.resetPasswordSuccess': '密码重置成功',
-        'toast.auth.resetPasswordFailed': '重置密码失败，请重试',
-        'toast.prompt.createSuccess': '提示词创建成功',
-        'toast.prompt.createFailed': '创建提示词失败',
-        'toast.prompt.updateSuccess': '提示词更新成功',
-        'toast.prompt.updateFailed': '更新提示词失败',
-        'toast.prompt.deleteSuccess': '提示词删除成功',
-        'toast.prompt.deleteFailed': '删除提示词失败',
-        'toast.prompt.likeUpdateFailed': '更新点赞状态失败',
-        'toast.prompt.saveUpdateFailed': '更新收藏状态失败',
+    'toast.auth.loginSuccess': '登录成功',
+    'toast.auth.loginFailed': '登录失败，请重试',
+    'toast.auth.registerSuccess': '账号创建成功',
+    'toast.auth.registerFailed': '注册失败，请重试',
+    'toast.auth.logoutSuccess': '已成功退出登录',
+    'toast.auth.verificationCodeSent': '验证码已发送到您的邮箱',
+    'toast.auth.verificationCodeSendFailed': '发送验证码失败，请重试',
+    'toast.auth.verificationSuccess': '验证成功',
+    'toast.auth.verificationFailed': '验证失败，请重试',
+    'toast.auth.resetPasswordSuccess': '密码重置成功',
+    'toast.auth.resetPasswordFailed': '重置密码失败，请重试',
+    'toast.prompt.createSuccess': '提示词创建成功',
+    'toast.prompt.createFailed': '创建提示词失败',
+    'toast.prompt.updateSuccess': '提示词更新成功',
+    'toast.prompt.updateFailed': '更新提示词失败',
+    'toast.prompt.deleteSuccess': '提示词删除成功',
+    'toast.prompt.deleteFailed': '删除提示词失败',
+    'toast.prompt.likeUpdateFailed': '更新点赞状态失败',
+    'toast.prompt.saveUpdateFailed': '更新收藏状态失败',
+    'toast.auth.profileUpdateSuccess': '个人信息更新成功',
+    'toast.auth.profileUpdateFailed': '更新个人信息失败',
+    'toast.prompt.categoryCreateSuccess': '分类创建成功',
+    'toast.prompt.categoryCreateFailed': '分类创建失败',
+    'toast.prompt.categorySensitiveWord': '分类名称包含敏感词'
   }
 };

@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import EmailVerification from "./pages/EmailVerification";
 import EmailVerificationConfirm from "./pages/EmailVerificationConfirm";
+import Account from "./pages/Account";
 
 // Create a client with proper caching configuration
 const queryClient = new QueryClient({
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/email-verification" element={<EmailVerification />} />
               <Route path="/verification" element={<EmailVerificationConfirm />} />
+              <Route path="/account" element={<Account />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

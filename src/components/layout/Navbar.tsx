@@ -62,6 +62,12 @@ const Navbar = () => {
           </Link>
           {isAuthenticated && (
             <>
+             <Link
+                to="/account"
+                className={`nav-link ${isActive("/account") ? "active-nav-link" : ""}`}
+              >
+                {t('nav.account')}
+              </Link>
               <Link
                 to="/my-prompts"
                 className={`nav-link ${isActive("/my-prompts") ? "active-nav-link" : ""}`}
@@ -101,18 +107,23 @@ const Navbar = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
+                  <Link to="/account" className="cursor-pointer w-full">
+                   {t('nav.account')}
+                  </Link>
+                </DropdownMenuItem>  
+                <DropdownMenuItem asChild>
                   <Link to="/my-prompts" className="cursor-pointer w-full">
-                    My Prompts
+                  {t('nav.myPrompts')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/favorites" className="cursor-pointer w-full">
-                    Favorites
+                  {t('nav.favorites')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/create" className="cursor-pointer w-full">
-                    Create Prompt
+                    {t('nav.create')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -120,7 +131,7 @@ const Navbar = () => {
                   className="cursor-pointer text-red-500 focus:text-red-500"
                   onClick={logout}
                 >
-                  Logout
+                   {t('nav.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

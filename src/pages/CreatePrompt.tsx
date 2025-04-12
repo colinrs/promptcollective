@@ -151,7 +151,7 @@ const [categories, setCategories] = useState<Category[]>([]);
           id: Number(promptId),
           title: formData.title,
           content: formData.content,
-          category: formData.category,
+          categoryId: formData.categoryId,
         });
         toast.success("Prompt updated successfully");
       } else {
