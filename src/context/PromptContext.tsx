@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { API_CONFIG } from "../config/api";
 import { httpClient } from "../lib/api";
 import { useQuery } from "@tanstack/react-query";
+import { useLanguage } from "./LanguageContext";
 
 export interface Prompt {
   id: number;
@@ -66,6 +67,7 @@ const PromptContext = createContext<PromptContextType | undefined>(undefined);
 
 export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useLanguage();
 
   // Fetch functions with explicit return types to prevent unnecessary re-fetching
   const getPrompt = async (id: string): Promise<Prompt> => {
@@ -118,9 +120,9 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIsLoading(true);
     try {
       await httpClient.post<Prompt>(API_CONFIG.CREATE_PROMPT, prompt);
-      toast.success("Prompt created successfully");
+      toast.success(t('toast.prompt.createSuccess'));
     } catch (error) {
-      toast.error("Failed to create prompt");
+      toast.error(t('toast.prompt.createFailed'));
       console.error("Create prompt error:", error);
       throw error;
     } finally {
@@ -132,9 +134,9 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIsLoading(true);
     try {
       await httpClient.put<Prompt>(API_CONFIG.UPDATE_PROMPT, promptUpdate);      
-      toast.success("Prompt updated successfully");
+      toast.success(t('toast.prompt.updateSuccess'));
     } catch (error) {
-      toast.error("Failed to update prompt");
+      toast.error(t('toast.prompt.updateFailed'));
       console.error("Update prompt error:", error);
       throw error;
     } finally {
@@ -146,9 +148,9 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIsLoading(true);
     try {
       await httpClient.delete(`${API_CONFIG.DELETE_PROMPT}?promptId=${id}`);
-      toast.success("Prompt deleted successfully");
+      toast.success(t('toast.prompt.deleteSuccess'));
     } catch (error) {
-      toast.error("Failed to delete prompt");
+      toast.error(t('toast.prompt.deleteFailed'));
       console.error("Delete prompt error:", error);
       throw error;
     } finally {
@@ -160,7 +162,7 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       await httpClient.post<Prompt>(`${API_CONFIG.LIKE_PROMPT}`, {"promptId": id, "action": action});
     } catch (error) {
-      toast.error("Failed to update like status");
+      toast.error(t('toast.prompt.likeUpdateFailed'));
       console.error("Like prompt error:", error);
       throw error;
     }
@@ -170,7 +172,7 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       await httpClient.post<Prompt>(`${API_CONFIG.SAVE_PROMPTS}`, {"promptId": id, "action": action});
     } catch (error) {
-      toast.error("Failed to update saved status");
+      toast.error(t('toast.prompt.saveUpdateFailed'));
       console.error("Save prompt error:", error);
       throw error;
     }
@@ -189,6 +191,7 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       return await httpClient.get<ListPromptResponse>(`${API_CONFIG.USER_PROMPTS_LIKE}`);
     } catch (error) {
+      toast.error("Failed to get user liked prompts");
       console.error("User liked prompts error:", error);
       throw error;
     }

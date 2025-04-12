@@ -9,6 +9,13 @@ type TranslationKeys = {
   'emailVerification.resend': string;
   'emailVerification.resending': string;
   'emailVerification.backToLogin': string;
+  'emailVerification.confirmTitle': string;
+  'emailVerification.invalidParams': string;
+  'emailVerification.verificationFailed': string;
+  'emailVerification.success': string;
+  'emailVerification.proceedToLogin': string;
+  'emailVerification.backToRegister': string;
+  'emailVerification.confirmDescription': string;
 
   // 导航栏
   'nav.home': string;
@@ -146,6 +153,28 @@ type TranslationKeys = {
   'gallery.empty.title': string;
   'gallery.empty.description': string;
   'gallery.empty.searchDescription': string;
+
+
+  // toast
+  'toast.auth.loginSuccess': string;
+  'toast.auth.loginFailed': string;
+  'toast.auth.registerSuccess': string;
+  'toast.auth.registerFailed': string;
+  'toast.auth.logoutSuccess': string;
+  'toast.auth.verificationCodeSent': string;
+  'toast.auth.verificationCodeSendFailed': string;
+  'toast.auth.verificationSuccess': string;
+  'toast.auth.verificationFailed': string;
+  'toast.auth.resetPasswordSuccess': string;
+  'toast.auth.resetPasswordFailed': string;
+  'toast.prompt.createSuccess': string;
+  'toast.prompt.createFailed': string;
+  'toast.prompt.updateSuccess': string;
+  'toast.prompt.updateFailed': string;
+  'toast.prompt.deleteSuccess': string;
+  'toast.prompt.deleteFailed': string;
+  'toast.prompt.likeUpdateFailed': string;
+  'toast.prompt.saveUpdateFailed': string;
 };
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -158,6 +187,13 @@ export const translations: Record<Language, TranslationKeys> = {
     'emailVerification.resend': 'Resend Verification Email',
     'emailVerification.resending': 'Resending',
     'emailVerification.backToLogin': 'Back to Login',
+    'emailVerification.confirmTitle': 'Confirm Your Email',
+    'emailVerification.confirmDescription': 'Confirming your email address',
+    'emailVerification.success': 'Email verification successful!',
+    'emailVerification.proceedToLogin': 'Proceed to Login',
+    'emailVerification.backToRegister': 'Back to Register',
+    'emailVerification.invalidParams': 'Invalid verification parameters',
+    'emailVerification.verificationFailed': 'Email verification failed',
 
     // 忘记密码页面
     'forgotPassword.title': 'Reset Password',
@@ -295,7 +331,27 @@ export const translations: Record<Language, TranslationKeys> = {
     'gallery.categories.all': 'All Categories',
     'gallery.empty.title': 'No prompts found',
     'gallery.empty.description': 'Be the first to create a prompt',
-    'gallery.empty.searchDescription': 'Try adjusting your search filters'
+    'gallery.empty.searchDescription': 'Try adjusting your search filters',
+    // toast
+    'toast.auth.loginSuccess': 'Successfully logged in',
+    'toast.auth.loginFailed': 'Login failed. Please try again.',
+    'toast.auth.registerSuccess': 'Account created successfully',
+    'toast.auth.registerFailed': 'Registration failed. Please try again.',
+    'toast.auth.logoutSuccess': 'Logged out successfully',
+    'toast.auth.verificationCodeSent': 'Verification code sent to your email',
+    'toast.auth.verificationCodeSendFailed': 'Failed to send verification code. Please try again.',
+    'toast.auth.verificationSuccess': 'Verification successful',
+    'toast.auth.verificationFailed': 'Verification failed. Please try again.',
+    'toast.auth.resetPasswordSuccess': 'Password reset successful',
+    'toast.auth.resetPasswordFailed': 'Failed to reset password. Please try again.',
+    'toast.prompt.createSuccess': 'Prompt created successfully',
+    'toast.prompt.createFailed': 'Failed to create prompt',
+    'toast.prompt.updateSuccess': 'Prompt updated successfully',
+    'toast.prompt.updateFailed': 'Failed to update prompt',
+    'toast.prompt.deleteSuccess': 'Prompt deleted successfully',
+    'toast.prompt.deleteFailed': 'Failed to delete prompt',
+    'toast.prompt.likeUpdateFailed': 'Failed to update like status',
+    'toast.prompt.saveUpdateFailed': 'Failed to update saved status',
   },
   zh: {
     // 邮箱验证页面
@@ -306,6 +362,14 @@ export const translations: Record<Language, TranslationKeys> = {
     'emailVerification.resend': '重新发送验证邮件',
     'emailVerification.resending': '发送中',
     'emailVerification.backToLogin': '返回登录',
+    'emailVerification.confirmTitle': '验证您的邮箱',
+    'emailVerification.confirmDescription': '正在验证您的邮箱地址',
+    'emailVerification.success': '您的邮箱已成功验证！',
+    'emailVerification.proceedToLogin': '前往登录',
+    'emailVerification.backToRegister': '返回注册',
+    'emailVerification.invalidParams': '无效的验证参数',
+    'emailVerification.verificationFailed': '邮箱验证失败',
+    
 
     // 忘记密码页面
     'forgotPassword.title': '重置密码',
@@ -442,6 +506,27 @@ export const translations: Record<Language, TranslationKeys> = {
     'gallery.categories.all': '所有分类',
     'gallery.empty.title': '未找到提示词',
     'gallery.empty.description': '成为第一个创建提示词的人',
-    'gallery.empty.searchDescription': '尝试调整搜索条件'
+    'gallery.empty.searchDescription': '尝试调整搜索条件',
+
+        // Toast消息
+        'toast.auth.loginSuccess': '登录成功',
+        'toast.auth.loginFailed': '登录失败，请重试',
+        'toast.auth.registerSuccess': '账号创建成功',
+        'toast.auth.registerFailed': '注册失败，请重试',
+        'toast.auth.logoutSuccess': '已成功退出登录',
+        'toast.auth.verificationCodeSent': '验证码已发送到您的邮箱',
+        'toast.auth.verificationCodeSendFailed': '发送验证码失败，请重试',
+        'toast.auth.verificationSuccess': '验证成功',
+        'toast.auth.verificationFailed': '验证失败，请重试',
+        'toast.auth.resetPasswordSuccess': '密码重置成功',
+        'toast.auth.resetPasswordFailed': '重置密码失败，请重试',
+        'toast.prompt.createSuccess': '提示词创建成功',
+        'toast.prompt.createFailed': '创建提示词失败',
+        'toast.prompt.updateSuccess': '提示词更新成功',
+        'toast.prompt.updateFailed': '更新提示词失败',
+        'toast.prompt.deleteSuccess': '提示词删除成功',
+        'toast.prompt.deleteFailed': '删除提示词失败',
+        'toast.prompt.likeUpdateFailed': '更新点赞状态失败',
+        'toast.prompt.saveUpdateFailed': '更新收藏状态失败',
   }
 };

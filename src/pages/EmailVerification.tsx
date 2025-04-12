@@ -26,7 +26,7 @@ const EmailVerification = () => {
       return;
     }
     try {
-      await sendVerificationCode(email);
+      await sendVerificationCode(email,"emailVerification");
     } catch (error) {
       console.error('Failed to send verification code:', error);
     }

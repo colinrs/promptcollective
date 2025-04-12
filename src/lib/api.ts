@@ -9,7 +9,7 @@ export interface LoginResponse {
   email: string;
   avatar?: string;
   token: string;
-  expireAt: string;
+  expireAt: number;
 }
 
 interface ApiResponse<T> {

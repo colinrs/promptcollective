@@ -18,6 +18,7 @@ export const API_CONFIG = {
   USER_SEND_VERIFICATION_CODE: '/v1/user/send_verification_code',
   USER_VERIFICATION_CODE: '/v1/user/verification_code',
   USER_RESET_PASSWORD: '/v1/user/reset_password',
+  USER_FORGOT_PASSWORD: '/v1/user/forgot_password',
   USER_REFRESH_TOKEN: '/v1/user/refresh_token',
   USER_REGISTER: '/v1/user/register',
 

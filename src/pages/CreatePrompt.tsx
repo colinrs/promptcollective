@@ -64,9 +64,16 @@ const [categories, setCategories] = useState<Category[]>([]);
     const loadCategories = async () => {
       const categoriesList = await listCategory();
       setCategories(categoriesList?.list);
+      // 如果不是编辑模式且有分类列表，设置第一个分类为默认值
+      if (!isEditMode && categoriesList?.list?.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          categoryId: categoriesList.list[0].id
+        }));
+      }
     };
     loadCategories();
-  }, [listCategory]);
+  }, [listCategory, isEditMode]);
 
   useEffect(() => {
     if (!isAuthenticated) {

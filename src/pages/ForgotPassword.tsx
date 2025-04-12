@@ -18,7 +18,7 @@ import Footer from "@/components/layout/Footer";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const { resetPassword, sendVerificationCode } = useAuth();
+  const { resetPassword, forgotPassword } = useAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [codeSent, setCodeSent] = useState(false);
@@ -89,7 +89,7 @@ const ForgotPassword = () => {
 
     setIsLoading(true);
     try {
-      await sendVerificationCode(formData.email);
+      await forgotPassword(formData.email);
       setCodeSent(true);
       // TODO: 显示成功提示
     } catch (error) {

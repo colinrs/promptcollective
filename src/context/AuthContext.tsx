@@ -3,6 +3,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { toast } from "sonner";
 import { API_CONFIG } from "../config/api";
 import { LoginResponse, httpClient } from "../lib/api";
+import { useLanguage } from "./LanguageContext";
 
 interface User {
   id: string;
@@ -18,9 +19,10 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
-  sendVerificationCode: (email: string) => Promise<void>;
-  verificationCode: (code: string) => Promise<void>;
+  sendVerificationCode: (email: string,event: string) => Promise<void>;
+  verificationCode: (code: string, email: string) => Promise<void>;
   resetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,6 +30,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Check for existing session
@@ -57,9 +60,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
-      toast.success('Successfully logged in');
+      toast.success(t('toast.auth.loginSuccess'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Login failed. Please try again.');
+      toast.error(error instanceof Error ? error.message : t('toast.auth.loginFailed'));
       console.error('Login error:', error);
     } finally {
       setIsLoading(false);
@@ -78,13 +81,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token: data.token,
         expire_at: data.expireAt,
       };
-      
+      if (data.token=="" || data.expireAt==0) {
+        return;
+      }
       setUser(user);
-     console.log(user);
+      console.log(user);
       localStorage.setItem('user', JSON.stringify(user));
-      toast.success('Account created successfully');
+      toast.success(t('toast.auth.registerSuccess'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Registration failed. Please try again.');
+      toast.error(error instanceof Error ? error.message : t('toast.auth.registerFailed'));
       console.error('Registration error:', error);
     } finally {
       setIsLoading(false);
@@ -94,16 +99,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    toast.success("Logged out successfully");
+    toast.success(t('toast.auth.logoutSuccess'));
   };
 
-  const sendVerificationCode = async (email: string) => {
+  const sendVerificationCode = async (email: string,event: string) => {
     setIsLoading(true);
     try {
-      await httpClient.post(API_CONFIG.USER_SEND_VERIFICATION_CODE, { email });
-      toast.success('验证码已发送到您的邮箱');
+      await httpClient.post(API_CONFIG.USER_SEND_VERIFICATION_CODE, { email,event });
+      toast.success(t('toast.auth.verificationCodeSent'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : '发送验证码失败，请重试');
+      toast.error(error instanceof Error ? error.message : t('toast.auth.verificationCodeSendFailed'));
       console.error('Send verification code error:', error);
       throw error;
     } finally {
@@ -115,9 +120,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       await httpClient.post(API_CONFIG.USER_RESET_PASSWORD, { email, code, newPassword });
-      toast.success('密码重置成功');
+      toast.success(t('toast.auth.resetPasswordSuccess'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : '重置密码失败，请重试');
+      toast.error(error instanceof Error ? error.message : t('toast.auth.resetPasswordFailed'));
       console.error('Reset password error:', error);
       throw error;
     } finally {
@@ -125,13 +130,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const verificationCode = async (code: string) => {
+  const verificationCode = async (code: string,email: string) => {
     setIsLoading(true);
     try {
-      await httpClient.post(API_CONFIG.USER_VERIFICATION_CODE, { code });
-      toast.success('验证码验证成功');
+      await httpClient.get(API_CONFIG.USER_VERIFICATION_CODE, { code,email});
+      toast.success(t('toast.auth.verificationSuccess'));
     } catch (error) {
-      toast.error(error instanceof Error? error.message : '验证码验证失败，请重试');
+      toast.error(error instanceof Error? error.message : t('toast.auth.verificationFailed'));
       console.error('Verification code error:', error);
       throw error;
     } finally {
@@ -139,6 +144,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  const forgotPassword = async (email: string) => {
+    setIsLoading(true);
+    try {
+      await httpClient.post(API_CONFIG.USER_FORGOT_PASSWORD, { email });
+      toast.success(t('toast.auth.verificationCodeSent'));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('toast.auth.verificationCodeSendFailed'));
+      console.error('Forgot password error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   return (
     <AuthContext.Provider
       value={{
@@ -151,6 +170,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         sendVerificationCode,
         verificationCode,
         resetPassword,
+        forgotPassword,
       }}
     >
       {children}

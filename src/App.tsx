@@ -19,13 +19,13 @@ import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import EmailVerification from "./pages/EmailVerification";
+import EmailVerificationConfirm from "./pages/EmailVerificationConfirm";
 
 // Create a client with proper caching configuration
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
       refetchOnWindowFocus: false,
       retry: 1,
     },
@@ -34,8 +34,8 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <LanguageProvider>
+    <LanguageProvider>
+      <AuthProvider>
         <PromptProvider>
           <TooltipProvider>
             <Toaster />
@@ -54,14 +54,16 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/email-verification" element={<EmailVerification />} />
+              <Route path="/verification" element={<EmailVerificationConfirm />} />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             </BrowserRouter>
           </TooltipProvider>
         </PromptProvider>
-      </LanguageProvider>
     </AuthProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 
