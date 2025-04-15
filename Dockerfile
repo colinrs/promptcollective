@@ -1,5 +1,5 @@
 # 构建阶段
-FROM node:18-alpine as builder
+FROM registry.cn-hangzhou.aliyuncs.com/library/node:18-alpine as builder
 
 # 设置工作目录
 WORKDIR /app
@@ -23,7 +23,7 @@ COPY .env .
 RUN npm run build
 
 # 生产阶段
-FROM nginx:alpine
+FROM registry.cn-hangzhou.aliyuncs.com/library/nginx:alpine
 
 # 复制构建产物
 COPY --from=builder /app/dist /usr/share/nginx/html
