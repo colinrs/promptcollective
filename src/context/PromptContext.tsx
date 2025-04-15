@@ -1,9 +1,8 @@
 
 import React, { createContext, useState, useContext } from "react";
 import { toast } from "sonner";
-import { API_CONFIG } from "../config/api";
-import { httpClient,ApiResponse } from "../lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { API_CONFIG,Code } from "../config/api";
+import { httpClient,CustomError } from "../lib/api";
 import { useLanguage } from "./LanguageContext";
 
 export interface Prompt {
@@ -211,8 +210,8 @@ export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       await httpClient.post<Category>(`${API_CONFIG.CREATE_CATEGORY}`, { name });
       toast.success(t('toast.prompt.categoryCreateSuccess'));
-    } catch (error: unknown) {
-      if (error.response?.data?.code === 20017) {
+    } catch (error) {
+      if (error instanceof CustomError && error.code === Code.SensitiveWord) {
         toast.error(t('toast.prompt.categorySensitiveWord'));
       } else {
         toast.error(t('toast.prompt.categoryCreateFailed'));

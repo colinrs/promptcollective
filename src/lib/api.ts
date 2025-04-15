@@ -1,6 +1,6 @@
 
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
-import { API_CONFIG } from '../config/api';
+import { API_CONFIG,Code } from '../config/api';
 import { toast } from 'sonner';
 
 export interface LoginResponse {
@@ -65,17 +65,17 @@ class HttpClient {
       <T>(response: AxiosResponse<ApiResponse<T>>) => {
         const { data } = response;
         const errorHandlers = new Map([
-          [20007, { redirect: '/auth?mode=login', defaultMsg: '用户已存在，请登录' }],
-          [20008, { redirect: '/auth?mode=register', defaultMsg: '用户不存在，请注册' }],
+          [Code.UserExist, { redirect: '/auth?mode=login', defaultMsg: '用户已存在，请登录' }],
+          [Code.UserNotExist, { redirect: '/auth?mode=register', defaultMsg: '用户不存在，请注册' }],
         ]);
         const handler = errorHandlers.get(data.code);
         if (handler) {
           if (window.confirm(data.msg || handler.defaultMsg)) {
             window.location.href = handler.redirect;
           }
-          throw new Error(data.msg || handler.defaultMsg);
+          throw new CustomError(data.msg || handler.defaultMsg, data.code);
         } else if (data.code !== 0) {
-          throw new Error(data.msg || '请求失败');
+          throw new CustomError(data.msg || '请求失败', data.code);
         }
         return data.data;
       },
@@ -84,7 +84,7 @@ class HttpClient {
           // Token expiration handling
           localStorage.removeItem('user');
           window.location.href = '/auth';
-          return Promise.reject(new Error('登录已过期，请重新登录'));
+          return Promise.reject(new CustomError('登录已过期，请重新登录', 401));
         }
 
         if (this.retryCount < MAX_RETRIES && this.shouldRetry(error)) {
@@ -95,8 +95,9 @@ class HttpClient {
 
         this.retryCount = 0;
         const errorMessage = error.response?.data?.msg || error.message || '请求失败';
+        const errorCode = error.response?.data?.code;
         toast.error(errorMessage);
-        return Promise.reject(new Error(errorMessage));
+        return Promise.reject(new CustomError(errorMessage, errorCode));
       }
     );
   }
@@ -147,14 +148,20 @@ export const httpClient = new HttpClient();
 
 export async function interpretResponse<T = unknown>(response: Response): Promise<T> {
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new CustomError(`HTTP error! status: ${response.status}`);
   }
 
   const jsonData: ApiResponse<T> = await response.json();
   
   if (jsonData.code !== 0) {
-    throw new Error(jsonData.msg || '请求失败');
+    throw new CustomError(jsonData.msg || '请求失败', jsonData.code);
   }
-  
   return jsonData.data;
+}
+
+export class CustomError extends Error {
+  constructor(message: string, public code?: number) {
+    super(message);
+    this.name = 'CustomError';
+  }
 }

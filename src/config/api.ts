@@ -1,3 +1,4 @@
+import { User } from "lucide-react";
 
 
 // API configuration
@@ -38,4 +39,11 @@ export const API_CONFIG = {
   GET_PROMPT_BY_ID: '/v1/prompt/get',
   SEARCH_PROMPTS: '/v1/prompt/search',
   GET_PROMPT_BY_CATEGORY_ID: '/v1/prompt/list_by_category',
+} as const;
+
+
+export const Code = {
+  UserNotExist: 20008 as number,
+  UserExist: 20007 as number,
+  SensitiveWord : 20017 as number,
 } as const;
