@@ -2,13 +2,16 @@
 FROM node:18-alpine as builder
 
 # 设置工作目录
-WORKDING /app
+WORKDIR /app
+
+# 设置npm镜像源
+RUN npm config set registry https://registry.npmmirror.com
 
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
 # 安装依赖
-RUN npm ci
+RUN npm ci --network-timeout 100000
 
 # 复制源代码
 COPY . .
