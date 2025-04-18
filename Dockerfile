@@ -16,9 +16,6 @@ RUN npm ci --network-timeout 100000
 # 复制源代码
 COPY . .
 
-# 复制环境变量文件
-COPY .env .
-
 # 构建应用
 RUN npm run build
 
