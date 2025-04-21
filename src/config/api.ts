@@ -47,3 +47,8 @@ export const Code = {
   UserExist: 20007 as number,
   SensitiveWord : 20017 as number,
 } as const;
+
+
+export const Constant = {
+  MaxCategoryCount: 100 as number,
+}

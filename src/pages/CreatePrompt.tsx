@@ -21,6 +21,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
+import {Constant} from "@/config/constant";
+
 interface FormData {
   title: string;
   content: string;
@@ -235,37 +237,39 @@ const [categories, setCategories] = useState<Category[]>([]);
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <Label htmlFor="category">{t('create.form.category')}</Label>
-                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" type="button">
-                      {t('create.form.createCategory')}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{t('create.form.newCategory')}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="categoryName">Category Name</Label>
-                        <Input
-                          id="categoryName"
-                          value={newCategoryName}
-                          onChange={(e) => setNewCategoryName(e.target.value)}
-                          placeholder="E.g. Creative Writing"
-                        />
+                {categories.length <= Constant.MaxCategoryCount && (
+                  <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" type="button">
+                        {t('create.form.createCategory')}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{t('create.form.newCategory')}</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="categoryName">Category Name</Label>
+                          <Input
+                            id="categoryName"
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                            placeholder="E.g. Creative Writing"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <DialogFooter>
-                      <Button variant="outline" onClick={() => setOpenDialog(false)}>
-                        Cancel
-                      </Button>
-                      <Button onClick={handleCreateCategory}>
-                        Create
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setOpenDialog(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleCreateCategory}>
+                          Create
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
               <select
                 id="category"
