@@ -244,13 +244,6 @@ const Auth = () => {
               </CardFooter>
             </form>
           </Card>
-          
-          {/* Demo credentials notice */}
-          <div className="mt-4 text-center text-sm text-gray-500 bg-blue-50 p-3 rounded-lg">
-            <p className="font-medium text-blue-800">Demo Access</p>
-            <p className="mt-1">Email: demo@example.com</p>
-            <p>Password: password</p>
-          </div>
         </div>
       </div>
       
