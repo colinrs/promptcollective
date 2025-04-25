@@ -26,4 +26,4 @@ jobs:
       env:
         ALIYUNCS_REGISTRY_PASSWD: ${{ secrets.ALIYUNCS_REGISTRY_PASSWD }}
         ALIYUNCS_REGISTRY_USER: ${{ secrets.ALIYUNCS_REGISTRY_USER }}
-      run: pwd && ls && ./build.sh 0.0.3
+      run: pwd && ls && ./build.sh 0.0.4

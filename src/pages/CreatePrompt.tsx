@@ -237,7 +237,7 @@ const [categories, setCategories] = useState<Category[]>([]);
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <Label htmlFor="category">{t('create.form.category')}</Label>
-                {categories.length <= Constant.MaxCategoryCount && (
+                {categories.length <= Constant.MaxCategoryCount && isAuthenticated && (
                   <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                     <DialogTrigger asChild>
                       <Button variant="outline" size="sm" type="button">
