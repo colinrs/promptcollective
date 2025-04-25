@@ -59,6 +59,7 @@ const Footer = () => {
           <p className="text-gray-500 text-sm mb-4 sm:mb-0">
             © {new Date().getFullYear()} PromptShare. All rights reserved.
           </p>
+          <span className="text-gray-500 text-xs mb-4 sm:mb-0">湘ICP备2025115633号-1</span>
           <div className="flex items-center gap-4">
             <a href="https://facebook.com/share" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition-colors">
               <svg
