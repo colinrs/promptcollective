@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CategoryBadge from "@/components/common/CategoryBadge";
 import SocialShare from "@/components/common/SocialShare";
+import SEOHead from "@/components/common/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Heart, Bookmark, Copy } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -18,7 +19,7 @@ const PromptDetails = () => {
   const { promptId } = useParams<{ promptId: string }>();
   const navigate = useNavigate();
   const { getPrompt, likePrompt, savePrompt } = usePrompts();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [prompt, setPrompt] = useState<Prompt>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -157,6 +158,12 @@ const PromptDetails = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title={prompt ? `${prompt.title} - PromptCollective` : 'AI Prompt - PromptCollective'}
+        description={prompt ? prompt.content.substring(0, 160) : (language === 'zh' ? '查看AI提示词详情' : 'View AI prompt details')}
+        keywords={prompt ? `${prompt.title}, ${prompt.category}, AI prompt` : 'AI prompt'}
+        ogType="article"
+      />
       <Navbar />
       
       <main className="flex-1 pt-24 pb-16 px-4">

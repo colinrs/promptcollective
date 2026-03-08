@@ -7,10 +7,11 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/context/LanguageContext";
+import SEOHead from "@/components/common/SEOHead";
 
 const NotFound = () => {
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     console.error(
@@ -21,6 +22,10 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title={language === 'zh' ? '页面未找到 - PromptCollective' : 'Page Not Found - PromptCollective'}
+        noIndex={true}
+      />
       <Navbar />
       
       <main className="flex-1 flex items-center justify-center p-4">

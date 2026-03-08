@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { usePrompts,ListPromptResponse, ListCategoryResponse } from "@/context/PromptContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { Link } from "react-router-dom";
+import SEOHead from "@/components/common/SEOHead";
 import {
   Pagination,
   PaginationContent,
@@ -20,7 +21,7 @@ import {
 
 const PromptGallery = () => {
   const {searchListPrompt, listCategory,isLoading } = usePrompts();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortOption, setSortOption] = useState<"newest" | "popular">("newest");
@@ -68,6 +69,14 @@ const PromptGallery = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title={language === 'zh' ? '探索AI提示词 - PromptCollective' : 'Explore AI Prompts - PromptCollective'}
+        description={language === 'zh' 
+          ? '浏览和发现社区创建的AI提示词。搜索ChatGPT、Claude、Midjourney等AI工具的最佳提示词模板。'
+          : 'Browse and discover AI prompts created by the community. Search for the best prompt templates for ChatGPT, Claude, Midjourney and more.'
+        }
+        keywords="AI prompts gallery, prompt templates, ChatGPT prompts, AI提示词库, prompt collection"
+      />
       <Navbar />
       
       <main className="flex-1 pt-24 pb-16 px-4">

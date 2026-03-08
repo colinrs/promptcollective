@@ -8,11 +8,12 @@ import PromptCard from "@/components/ui/PromptCard";
 import { usePrompts,Prompt } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import SEOHead from "@/components/common/SEOHead";
 
 const Index = () => {
   const { searchListPrompt } = usePrompts();
   const { isAuthenticated } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [popularPrompts, setPopularPrompts] = useState<Prompt[]>([]);
 
   useEffect(() => {
@@ -27,6 +28,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title={language === 'zh' ? 'PromptCollective - AI提示词分享平台' : 'PromptCollective - Discover & Share AI Prompts'}
+        description={language === 'zh' 
+          ? '探索、创建和分享创意AI提示词。加入我们的提示词创作者社区，发现最佳的ChatGPT、Claude、Midjourney提示词。'
+          : 'Explore, create and share creative AI prompts. Join our community of prompt creators and discover the best prompts for ChatGPT, Claude, Midjourney and more.'
+        }
+        keywords="AI prompts, ChatGPT prompts, prompt engineering, AI提示词, prompt templates, Midjourney prompts"
+      />
       <Navbar />
       
       {/* Hero Section */}

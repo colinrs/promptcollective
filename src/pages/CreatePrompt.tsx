@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/context/LanguageContext";
+import SEOHead from "@/components/common/SEOHead";
 // 从 PromptContext 导入 usePrompts 钩子函数
 import { usePrompts,Category } from "@/context/PromptContext";
 import { useAuth } from "@/context/AuthContext";
@@ -34,7 +35,7 @@ const CreatePrompt = () => {
   const { promptId } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { 
     isLoading,
     createPrompt, 
@@ -183,6 +184,17 @@ const [categories, setCategories] = useState<Category[]>([]);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title={isEditMode 
+          ? (language === 'zh' ? '编辑提示词 - PromptCollective' : 'Edit Prompt - PromptCollective')
+          : (language === 'zh' ? '创建提示词 - PromptCollective' : 'Create Prompt - PromptCollective')
+        }
+        description={language === 'zh' 
+          ? '创建和分享你的AI提示词，与社区一起探索AI的无限可能。'
+          : 'Create and share your AI prompts. Explore the endless possibilities of AI with our community.'
+        }
+        noIndex={true}
+      />
       <Navbar />
       
       <main className="flex-1 pt-24 pb-16 px-4">

@@ -2,10 +2,15 @@
 import React from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/common/SEOHead";
 
 const Terms = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title="Terms of Service - PromptCollective"
+        description="Read the terms of service for using PromptCollective. Understand your rights and responsibilities."
+      />
       <Navbar />
       
       <main className="flex-1 pt-24 pb-16 px-4">

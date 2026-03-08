@@ -2,10 +2,15 @@
 import React from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/common/SEOHead";
 
 const Privacy = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title="Privacy Policy - PromptCollective"
+        description="Learn how PromptCollective collects, uses, and protects your personal information. Read our privacy policy."
+      />
       <Navbar />
       
       <main className="flex-1 pt-24 pb-16 px-4">
